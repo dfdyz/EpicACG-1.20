@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "addition": {
+    "item" : "epicacg:dragon_shit_crystal"
+  },
+  "result": {
+    "item": "epicacg:elucidator"
+  }
+}

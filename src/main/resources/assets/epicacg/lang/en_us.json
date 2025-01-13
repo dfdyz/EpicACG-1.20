@@ -1,0 +1,55 @@
+{
+  "itemGroup.epicacg.items": "EpicACG",
+
+  "item.epicacg.elucidator": "Elucidator",
+  "item.epicacg.lambent_light": "Lambent Light",
+  "item.epicacg.dark_repulsor" :"Dark Repulsor",
+  "item.epicacg.dragon_shit_crystal" :"Dragon Crystal",
+  "item.epicacg.anneal_blade": "Anneal Blade",
+  "item.epicacg.battle_scythe": "Battle Scythe",
+  "item.epicacg.destiny": "-Destiny-",
+  "item.epicacg.training_bow": "Training Bow",
+  "item.epicacg.custom_skillbook": "Skill Book",
+
+  "item.epicacg.firefly_sword": "Glamoth's Standard Melee Weapon - FireflyIV",
+
+  "skill.epicacg.sao_dual_sword_skill.tooltip": "Dual Sword：An Extra Skill that unlocks the ability to weild two single-hand sword simultaneously. This skill is much more powerful than any other skill, it requires the user to have extraordinary reaction speed.",
+  "skill.epicacg.sao_dual_sword_skill": "Dual Sword",
+  "tab.skill.epicacg.sao_dual_sword_skill": "SKILL - Dual Sword",
+
+  "skill.epicacg.sao_rapier_skill.tooltip": "Rapier：An Skill that unlocks the ability to use different attack while weilding Rapier. This skill is much more quickly than any other skill.",
+  "skill.epicacg.sao_rapier_skill": "Rapier",
+  "tab.skill.epicacg.sao_rapier_skill": "SKILL - Rapier",
+
+
+  "skill.epicacg.sao_single_sword.tooltip": "Single sword, Basic skill",
+  "skill.epicacg.sao_single_sword": "Single Sword",
+  "tab.skill.epicacg.sao_single_sword": "SKILL - Single Sword",
+
+  "skill.epicacg.sao_single_sword_guard_skill.tooltip": "Use Single-hand to guard.",
+  "skill.epicacg.sao_single_sword_guard_skill": "Single-hand Sword Guard\nAvailable Weapon Types : %s",
+
+  "skill.epicfight.sao_single_sword.category": "SINGLE SWORD",
+
+  "epicfight.skill_slot.sao_single_sword": "SINGLE SWORD SYSTEM",
+
+  "skill.epicacg.single_sword_sa": "",
+  "skill.epicacg.single_sword_sa.tooltip": "",
+
+
+  "skill.epicacg.weapon_skill_rapier": "Multi-Skill",
+  "skill.epicacg.weapon_skill_rapier.tooltip": "Flash puncture(Unable to use while running)\nComet puncture\n",
+
+  "skill.epicacg.battle_scythe_sa": "Sheathed Blade",
+  "skill.epicacg.battle_scythe_sa.tooltip": "Advance forward, flash and cut quickly",
+
+
+  "skill.epicacg.gs_yoimiya_sa": "Dance of Bow",
+  "skill.epicacg.gs_yoimiya_sa.tooltip": "Firework !",
+
+
+
+
+  "key.epicacg.gui": "EFM ACG AddonPack",
+  "key.epicacg.switch_skill": "SkillSwitching(Hold and Rolling the mid button)"
+}

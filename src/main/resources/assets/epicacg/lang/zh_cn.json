@@ -1,0 +1,48 @@
+{
+  "itemGroup.epicacg.items": "史诗战斗-整活附属包",
+
+  "item.epicacg.elucidator": "阐释者",
+  "item.epicacg.lambent_light": "闪烁之光",
+  "item.epicacg.dark_repulsor": "逐暗者",
+  "item.epicacg.dragon_shit_crystal": "龙水晶",
+  "item.epicacg.anneal_blade": "韧炼之剑",
+  "item.epicacg.battle_scythe": "战斗镰刀",
+  "item.epicacg.destiny": "-命运-",
+  "item.epicacg.training_bow": "训练弓",
+  "item.epicacg.firefly_sword": "格拉默制式近战武器 - 火萤IV型",
+  "item.epicacg.custom_skillbook": "技能书",
+
+  "skill.epicacg.sao_dual_sword_skill.tooltip": "二刀流:\nExtra技能,使用后可以解锁同时使用两把单手剑的能力\n二刀流比其他任何技能都要强大得多，它需要使用者拥有超凡的反应速度\n\n特殊效果:\n双持期间\n当耐力大于80%时,格挡全部攻击\n当耐力大于30%,韧性大幅提升",
+  "skill.epicacg.sao_dual_sword_skill": "二刀流",
+  "tab.skill.epicacg.sao_dual_sword_skill": "技能 - 二刀流",
+
+  "skill.epicacg.sao_rapier_skill.tooltip": "细剑: 单手剑的一种分支, 允许使用者使用不同的攻击模式, 这种模式拥有非常快的攻击速度。\n细剑允许你积累最多3层充能，\n当你在冲刺时释放技能，你将消耗1层充能发动[彗星冲刺]向前突刺一段距离，中途可以改变方向。\n当你在非冲刺状态下释放技能时，你将消耗2层充能发动一次牛逼的攻击。",
+  "skill.epicacg.sao_rapier_skill": "细剑",
+  "tab.skill.epicacg.sao_rapier_skill": "技能 - 细剑",
+
+  "skill.epicacg.sao_single_sword.tooltip": "单手剑，基础技能。",
+  "skill.epicacg.sao_single_sword": "单手剑",
+  "tab.skill.epicacg.sao_single_sword": "技能 - 单手剑",
+
+  "epicfight.skill_slot.sao_single_sword": "单手剑系",
+
+  "skill.epicacg.sao_single_sword_guard_skill.tooltip": "用剑格挡",
+  "skill.epicacg.sao_single_sword_guard_skill": "单手剑-格挡 %s",
+
+  "skill.epicfight.sao_single_sword.category": "单手用直剑",
+
+  "skill.epicacg.single_sword_sa": "",
+  "skill.epicacg.single_sword_sa.tooltip": "",
+
+  "skill.epicacg.weapon_skill_rapier": "技能 (多态)",
+  "skill.epicacg.weapon_skill_rapier.tooltip": "闪光穿刺(奔跑时无法触发)\n彗星穿刺\n",
+
+  "skill.epicacg.battle_scythe_sa": "归刃",
+  "skill.epicacg.battle_scythe_sa.tooltip": "向前突进，多次闪现，快速斩击\n",
+
+  "skill.epicacg.gs_yoimiya_sa": "弓弦之舞",
+  "skill.epicacg.gs_yoimiya_sa.tooltip": "腾空并向下释放烟花，造成大量伤害",
+
+  "key.epicacg.gui": "史诗战斗ACG附属包",
+  "key.epicacg.switch_skill": "技能选择(按住并滚动滚轮)"
+}

@@ -1,0 +1,18 @@
+{
+	"parent": "epicacg:item/training_bow1",
+	"overrides": [
+		{
+			"predicate": {
+				"epicacg:pulling": 1
+			},
+			"model": "epicacg:item/training_bow1"
+		},
+		{
+			"predicate": {
+				"epicacg:pulling": 1,
+				"epicacg:pull": 0.9
+			},
+			"model": "epicacg:item/training_bow2"
+		}
+	]
+}

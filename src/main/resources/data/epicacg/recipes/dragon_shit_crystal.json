@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "A": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "epicacg:dragon_shit_crystal",
+    "count": 1
+  }
+}

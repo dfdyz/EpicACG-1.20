@@ -1,0 +1,28 @@
+{
+  "attributes":
+  {
+    "common":
+    {
+      "armor_negation":5.0,
+      "impact":7.0,
+      "max_strikes":4,
+      "speed_bonus":-2.0,
+      "damage_bonus": 30.0
+    },
+    "one_hand":
+    {
+      "armor_negation":5.0,
+      "impact":7.0,
+      "max_strikes":4,
+      "speed_bonus":-2.0,
+      "damage_bonus": 30.0
+    }
+  },
+  "collider":
+  {
+    "number": 3,
+    "center": [0.0, 0.0, -0.8],
+    "size": [0.5, 0.8, 1.0]
+  },
+  "type":"epicacg:genshin_bow"
+}

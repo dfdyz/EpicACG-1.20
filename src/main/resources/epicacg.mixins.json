@@ -1,0 +1,21 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_17",
+	"package": "com.dfdyz.epicacg.mixins",
+	"plugin": "com.dfdyz.epicacg.mixinloader.CompatMixinPlugin",
+	"client": [
+		"MeshAccessor",
+		"MixinGameRenderer",
+		"MixinLevelRenderer",
+		"MixinLivingEntity",
+		"MixinParticleEngine"
+	],
+	"mixins": [
+		"MixinMob"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "epicacg.mixins.refmap.json"
+}

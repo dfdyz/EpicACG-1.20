@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "epicacg:dragon_shit_crystal"
+    },
+    "addition": {
+        "item" : "epicacg:dragon_shit_crystal"
+    },
+    "result": {
+        "item": "epicacg:dark_repulsor"
+    }
+}
