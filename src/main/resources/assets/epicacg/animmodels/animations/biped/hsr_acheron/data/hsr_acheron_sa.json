@@ -1,0 +1,68 @@
+{
+    "trail_effects": [
+        {
+            "start_time": 0.5,
+            "end_time": 0.6,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 0.8833,
+            "end_time": 1,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 1.35,
+            "end_time": 1.48,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 1.75,
+            "end_time": 1.9,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 2.18,
+            "end_time": 2.28,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 3.1,
+            "end_time": 3.38,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 3.95,
+            "end_time": 4.2,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        },
+        {
+            "start_time": 4.91,
+            "end_time": 5,
+            "lifetime": 4,
+            "joint": "Tool_R",
+            "color": [255, 0, 0],
+            "item_skin_hand": "main_hand"
+        }
+    ]
+}

@@ -1,0 +1,56 @@
+{
+  "weapon.genshin_bow":
+  {
+    "category":"weapon",
+    "subtitle":"weapon.genshin_bow",
+    "sounds":[{"name":"epicacg:weapon/genshin_bow", "stream":true}]
+  },
+  "weapon.genshin_bow_fallatk":
+  {
+    "category":"weapon",
+    "subtitle":"weapon.genshin_bow_fallatk",
+    "sounds":[{"name":"epicacg:weapon/genshin_bow_fallatk", "stream":true}]
+  },
+  "character.yoimiya.skill1":
+  {
+    "category":"weapon",
+    "subtitle":"character.yoimiya.skill1",
+    "sounds":[{"name":"epicacg:character/yoimiya/skill_1", "stream":true}]
+  },
+  "character.yoimiya.skill2":
+  {
+    "category":"weapon",
+    "subtitle":"character.yoimiya.skill2",
+    "sounds":[{"name":"epicacg:character/yoimiya/skill_2", "stream":true}]
+  },
+  "character.yoimiya.skill3":
+  {
+    "category":"weapon",
+    "subtitle":"character.yoimiya.skill3",
+    "sounds":[{"name":"epicacg:character/yoimiya/skill_3", "stream":true}]
+  },
+  "weapon_skill.dual_sword.sa1_1":
+  {
+    "category":"weapon",
+    "subtitle":"weapon_skill.dual_sword.sa1_1",
+    "sounds":[{"name":"epicacg:weapon/dual_sword_sa1_1", "stream":true}]
+  },
+  "weapon_skill.dual_sword.sa1_2":
+  {
+    "category":"weapon",
+    "subtitle":"weapon_skill.dual_sword.sa1_2",
+    "sounds":[{"name":"epicacg:weapon/dual_sword_sa1_2", "stream":true}]
+  },
+  "weapon_skill.dmc5_jc_1":
+  {
+    "category":"weapon",
+    "subtitle":"weapon_skill.dmc5_jc_1",
+    "sounds":[{"name":"epicacg:weapon/dmc5_jc1", "stream":true}]
+  },
+  "weapon_skill.dmc5_jc_2":
+  {
+    "category":"weapon",
+    "subtitle":"weapon_skill.dmc5_jc_2",
+    "sounds":[{"name":"epicacg:weapon/dmc5_jc2", "stream":true}]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "attributes":
+  {
+    "common":
+    {
+      "armor_negation":30.0,
+      "impact":2.0,
+      "max_strikes":4,
+      "speed_bonus":-0.8,
+      "damage_bonus": 2.0
+    },
+    "sao_single_sword":
+    {
+      "armor_negation":30.0,
+      "impact":2.0,
+      "max_strikes":4,
+      "speed_bonus":-0.8,
+      "damage_bonus": 2.0
+    },
+    "sao_dual_sword":
+    {
+      "armor_negation":30.0,
+      "impact":2.0,
+      "max_strikes":4,
+      "speed_bonus":2.5,
+      "damage_bonus": 0
+    },
+    "sao_rapier":
+    {
+      "armor_negation":50.0,
+      "impact":2.0,
+      "max_strikes":4,
+      "speed_bonus":-0.8,
+      "damage_bonus": 2.0
+    }
+  },
+  "type":"epicacg:sao_single_sword",
+  "collider":
+  {
+    "number": 3,
+    "center": [0.0, 0.0, -0.72],
+    "size": [0.3, 0.3, 1.285]
+  }
+}

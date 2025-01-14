@@ -1,0 +1,20 @@
+{
+  "attributes":
+  {
+    "common":
+    {
+      "armor_negation":10.0,
+      "impact":2.5,
+      "max_strikes":4,
+      "speed_bonus": -2.8,
+      "damage_bonus": 6.0
+    }
+  },
+  "collider":
+  {
+    "number": 6,
+    "center": [0.0, 0.0, -0.8],
+    "size": [0.5, 0.8, 1.0]
+  },
+  "type":"epicacg:battle_scythe"
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CBC",
+    "DAD",
+    "CBC"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:bow"
+    },
+    "B": {
+      "item": "minecraft:end_rod"
+    },
+    "C": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "epicacg:training_bow",
+    "count": 1
+  }
+}
