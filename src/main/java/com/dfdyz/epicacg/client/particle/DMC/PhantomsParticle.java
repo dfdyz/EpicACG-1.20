@@ -36,7 +36,7 @@ public class PhantomsParticle extends NoRenderParticle {
         if (this.age++ >= this.lifetime) {
             this.remove();
         } else {
-            if(entityPatch.getOriginal().isAlive() && age % 3 == 0){
+            if(entityPatch.getOriginal().isAlive() && age % 2 == 0){
                 for(int i =0; i < 1; ++i){
                     lastAng = nextFloat(random,120+lastAng-15,120+lastAng+15);
                     float r = nextFloat(random,0, 1.2f) + 6f;
@@ -75,7 +75,7 @@ public class PhantomsParticle extends NoRenderParticle {
                             entityPatch,
                             MyAnimations.DMC5_V_JC,
                             x_ + x,
-                            y_ + y,
+                            y_ + y + 2,
                             z_ + z,
                             dx, dy, dz,
                             lft,

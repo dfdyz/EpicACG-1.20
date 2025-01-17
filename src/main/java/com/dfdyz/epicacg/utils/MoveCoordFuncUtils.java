@@ -6,7 +6,9 @@ import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.TransformSheet;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.property.MoveCoordFunctions;
+import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.math.Vec3f;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 public class MoveCoordFuncUtils {
     public static MoveCoordFunctions.MoveCoordSetter TraceLockedTargetEx(float totalDistance){
@@ -21,7 +23,6 @@ public class MoveCoordFuncUtils {
                 Vec3 pos = entitypatch.getOriginal().position();
                 Vec3 targetpos = attackTarget.position();
                 Vec3 toTarget = targetpos.subtract(pos);
-
                 Vec3 viewVec = entitypatch.getOriginal().getViewVector(1.0F);
 
                 float horizontalDistance = Math.max((float)toTarget.horizontalDistance() - (attackTarget.getBbWidth() + entitypatch.getOriginal().getBbWidth()) * 0.75F, 0.0F);

@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import org.slf4j.Logger;
 import yesman.epicfight.api.animation.Joint;
+import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.*;
@@ -34,6 +35,7 @@ import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.model.armature.HumanoidArmature;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
 
@@ -243,7 +245,6 @@ public class MyAnimations {
                 new AttackAnimation.Phase(0.5416F, 0.58F, 0.6667F, 0.6667F, 0.6667F, InteractionHand.MAIN_HAND, biped.toolR, null)
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT),
-
                 new AttackAnimation.Phase(0.6667F, 0.7666F, 0.8833F, 0.8833F, 0.8833F, InteractionHand.MAIN_HAND, biped.toolR, null)
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT),
@@ -257,6 +258,7 @@ public class MyAnimations {
                 new AttackAnimation.Phase(1.6F, 1.65F, 1.7666F, 1.9666F, Float.MAX_VALUE, InteractionHand.MAIN_HAND, biped.toolR, null)
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1F))
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT))
+                .Lock(true, false)
                 .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.NEUTRALIZE)
                 .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT)
                 //.addProperty(AnimationProperty.AttackAnimationProperty.BASIS_ATTACK_SPEED, 1f)
@@ -264,7 +266,10 @@ public class MyAnimations {
                 .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0f, 1.7f))
                 .addProperty(AnimationProperty.ActionAnimationProperty.COORD_SET_BEGIN, null)
                 .addProperty(AnimationProperty.ActionAnimationProperty.COORD_SET_TICK, TraceLockedTargetEx(3))
+                .addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true)
                 .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, MSpeed(0.7f))
+                .addProperty(AnimationProperty.StaticAnimationProperty.FIXED_HEAD_ROTATION, true)
+                .addProperty(AnimationProperty.StaticAnimationProperty.POSE_MODIFIER, MyAnimations::empty_pose_modifier)
                 .addProperty(AnimationProperty.StaticAnimationProperty.TIME_STAMPED_EVENTS, new AnimationEvent.TimeStampedEvent[] {
                         AnimationEvent.TimeStampedEvent.create(0.4833f, (entitypatch, anim, objs) -> {
                             Entity entity = entitypatch.getOriginal();
@@ -535,6 +540,7 @@ public class MyAnimations {
                 new AttackAnimation.Phase(0.0F, 1.3F, 1.4F, 1.4F,  1.4F, InteractionHand.MAIN_HAND, biped.toolR, null)
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.SPARKS_SPLASH_HIT)
+
                         .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN),
                 new AttackAnimation.Phase(1.4F, 1.4F, 1.5F, 1.733F,  Float.MAX_VALUE, InteractionHand.MAIN_HAND, biped.rootJoint, WeaponCollider.GenShin_Bow_FallAttack)
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2F))
@@ -547,6 +553,8 @@ public class MyAnimations {
                 .addProperty(AnimationProperty.ActionAnimationProperty.COORD_SET_TICK, MoveCoordFuncUtils.TraceLockedTargetEx(7))
                 //.addProperty(AnimationProperty.ActionAnimationProperty.COORD_GET, MoveCoordFunctions.WORLD_COORD)
                 //.addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, MSpeed( 1f))
+                .addProperty(AnimationProperty.StaticAnimationProperty.FIXED_HEAD_ROTATION, true)
+                .addProperty(AnimationProperty.StaticAnimationProperty.POSE_MODIFIER, MyAnimations::empty_pose_modifier)
                 .addEvents(
                         AnimationEvent.TimeStampedEvent
                                 .create(0.1F, (entitypatch, anim, objs) -> {
@@ -601,7 +609,6 @@ public class MyAnimations {
                                 newTF(0f,1.2f, 5,biped.toolR, InteractionHand.MAIN_HAND)
                         )
                 );
-
                  */
 
         SAO_RAPIER_AUTO4 = new BasicAttackAnimation(0.05F,"biped/sao_rapier/sao_rapier_auto4", biped,
@@ -692,6 +699,8 @@ public class MyAnimations {
                 .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.LONG)
                 .addProperty(AnimationProperty.AttackAnimationProperty.FIXED_MOVE_DISTANCE,true)
                 .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 1.5f))
+                .addProperty(AnimationProperty.StaticAnimationProperty.FIXED_HEAD_ROTATION, true)
+                .addProperty(AnimationProperty.StaticAnimationProperty.POSE_MODIFIER, MyAnimations::empty_pose_modifier)
                 .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, new AnimationEvent[]{
                         AnimationEvent.create((ep, anim, objs) -> {
                             SAOSkillAnimUtils.RapierSA.prev(ep);
@@ -717,6 +726,7 @@ public class MyAnimations {
                 .addProperty(AnimationProperty.AttackAnimationProperty.FIXED_MOVE_DISTANCE,true)
                 .addProperty(MyProperties.MOVE_ROOT_PHASE, new MyProperties.SpecialPhase(0, 5.35f))
                 .addProperty(MyProperties.INVISIBLE_PHASE, new MyProperties.SpecialPhase(0.85f,2.8f))
+                .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 4.48f))
                 .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, new AnimationEvent[]{
                         AnimationEvent.create((ep, anim, objs) -> {
                             DMC_V_JC_Server.prev(ep);
@@ -784,20 +794,27 @@ public class MyAnimations {
                         .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F))
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT)
                 // 4.91 fire final cut event
-        )
+        ).Lock(true, false)
                 .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.NEUTRALIZE)
                 .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, Particles.BLACK_KNIGHT)
                 .addProperty(MyProperties.AFTER_DAMAGE_ENTITY, (anim, phase, attacker, target, dmg) -> {
                     target.addEffect(new MobEffectInstance(MobEffects.STOP.get(), 20, 1));
                 })
-                //.addProperty(AnimationProperty.AttackAnimationProperty.BASIS_ATTACK_SPEED, 1f)
                 .addProperty(AnimationProperty.AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0f)
-                .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0f, 5.5f))
+                .addProperty(AnimationProperty.ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0f, 5f))
+                .addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false)
                 .addProperty(AnimationProperty.ActionAnimationProperty.COORD_SET_BEGIN, null)
                 .addProperty(AnimationProperty.ActionAnimationProperty.COORD_SET_TICK, TraceLockedTargetEx(2))
+                .addProperty(AnimationProperty.StaticAnimationProperty.FIXED_HEAD_ROTATION, true)
+                .addProperty(AnimationProperty.StaticAnimationProperty.POSE_MODIFIER, MyAnimations::empty_pose_modifier)
                 .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, new AnimationEvent[]{
                         AnimationEvent.create((ep, anim, para) -> {
                             ACHERON_SA_CLIENT.prev(ep);
+                        }, AnimationEvent.Side.CLIENT)
+                })
+                .addProperty(AnimationProperty.StaticAnimationProperty.TIME_STAMPED_EVENTS, new AnimationEvent.TimeStampedEvent[]{
+                        AnimationEvent.TimeStampedEvent.create(3.6f, (ep, anim, para) -> {
+                            ACHERON_SA_CLIENT.correct_camera(ep);
                         }, AnimationEvent.Side.CLIENT)
                 })
                 .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, MSpeed(1f));
@@ -1048,15 +1065,23 @@ public class MyAnimations {
         , AttackAnimation.JointColliderPair.of(Armatures.BIPED.toolL, null)};
     }
 
+    static void empty_pose_modifier(DynamicAnimation var1, Pose var2, LivingEntityPatch<?> var3, float var4, float var5){
+
+    }
+
     public static CameraAnimation YOIMIYA_SA;
     public static CameraAnimation SAO_RAPIER_SA2_CAM;
     public static CameraAnimation SAO_RAPIER_SA2_CAM2;
     public static CameraAnimation DMC_V_PREV;
+    public static CameraAnimation HSR_ACHERON_SA_CAM1;
     public static void LoadCamAnims(){
         YOIMIYA_SA = CameraAnimation.load(new ResourceLocation(EpicACG.MODID, "camera_animation/yoimiya.json"));
         SAO_RAPIER_SA2_CAM = CameraAnimation.load(new ResourceLocation(EpicACG.MODID, "camera_animation/sao_rapier_sa2.json"));
         SAO_RAPIER_SA2_CAM2 = CameraAnimation.load(new ResourceLocation(EpicACG.MODID, "camera_animation/sao_rapier_sa2_post.json"));
         DMC_V_PREV = CameraAnimation.load(new ResourceLocation(EpicACG.MODID, "camera_animation/dmc_v_prev.json"));
+
+        HSR_ACHERON_SA_CAM1 = CameraAnimation.load(new ResourceLocation(EpicACG.MODID, "camera_animation/hsr_acheron_sa1.json"));
+
     }
 
 }

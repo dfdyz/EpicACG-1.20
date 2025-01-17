@@ -17,6 +17,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+
+import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = EpicACG.MODID, value = Dist.CLIENT)
@@ -30,6 +33,7 @@ public class CameraEvents {
     private static boolean isEnd = true;
     private static boolean linking = false;
     private static LivingEntity orginal;
+    private static LivingEntityPatch<?> patched;
     private static final Vec3 Vec3UP = new Vec3(0,1f,0);
     private static float fovO = 0;
     private static boolean isLockPos = false;
@@ -97,16 +101,29 @@ public class CameraEvents {
 
             float _rot_y =  yawLock-pose.rotY + tmp*t;
             float _rot_x = MathUtils.lerpBetween(pose.rotX, event.getPitch(), t);
+            float _rot_z = MathUtils.lerpBetween(pose.rotZ, event.getRoll(), t);
 
-            camera.setRotation(_rot_y, _rot_x);
+            //camera.setRotation(_rot_y, _rot_x);
+
             camera.setPosition(camPos.x,camPos.y,camPos.z);
             //camera.
             //event.move
             event.setYaw(_rot_y);
             event.setPitch(_rot_x);
+            event.setRoll(_rot_z);
         }
         else {
-            pose = currentAnim.getPose((tick + (float) partialTicks) / 20f);
+            float time;
+
+            if(patched == null){
+                time = (tick + (float) partialTicks) / 20f;
+            }
+            else {
+                var animPlayer = patched.getClientAnimator().baseLayer.animationPlayer;
+                time = MathUtils.lerpBetween(animPlayer.getPrevElapsedTime(), animPlayer.getElapsedTime(), (float) partialTicks);
+            }
+
+            pose = currentAnim.getPose(time);
             pose_ = pose;
 
             //Vec3 curPos = camera.getPosition();
@@ -114,14 +131,14 @@ public class CameraEvents {
             Vec3 camPos = (pose.pos.yRot((float) Math.toRadians(-yawLock-90f))).add(isLockPos ? posLock : orginal.getPosition((float) partialTicks));
 
             //Vec3 p = camPos.subtract(curPos);
-
             //System.out.println(pose);
 
             //cameraAccessor.invokeMove(p.x,p.y,p.z);
-            camera.setRotation(yawLock-pose.rotY, pose.rotX);
-            camera.setPosition(camPos.x,camPos.y,camPos.z);
+            //camera.setRotation(yawLock-pose.rotY, pose.rotX);
+            camera.setPosition(camPos.x, camPos.y,camPos.z);
             event.setYaw(yawLock-pose.rotY);
             event.setPitch(pose.rotX);
+            event.setRoll(pose.rotZ);
             //event.move
         }
         //event.setCanceled(true);
@@ -176,9 +193,10 @@ public class CameraEvents {
     @SubscribeEvent
     public static void Tick(TickEvent.ClientTickEvent event){
         if(Minecraft.getInstance().isPaused()) return;
-
         if(event.phase == TickEvent.Phase.START){
-            if (!isEnd) tick++;
+            if (!isEnd) {
+                tick++;
+            }
             if (linking) linkTick++;
         }
         else return;
@@ -209,7 +227,43 @@ public class CameraEvents {
 
         //if (!isEnd || linking)
             //Minecraft.getInstance().options.fov.set((int)fovO);
+        patched = null;
+        orginal = org;
+        yawLock = org.getViewYRot(0);
+        posLock = org.position();
+        linking = false;
+        isEnd = false;
+        tick = 0;
+        linkTick = 0;
+        maxLinkTick = 8;
+        currentAnim = anim;
+        isLockPos = lockOrgPos;
+        fovO = (float) Minecraft.getInstance().options.fov.get();
+    }
 
+    public static void UpdateCoord(LivingEntity org){
+        if(org instanceof Player){
+            if (!((Player) org).isLocalPlayer()) return;
+        }
+        else {
+            return;
+        }
+        posLock = orginal.position();
+    }
+
+    public static void SetAnim(CameraAnimation anim, LivingEntityPatch<?> patch, boolean lockOrgPos){
+        //System.out.println("Set Camera Animation");
+        var org = patch.getOriginal();
+        if(org instanceof Player){
+            if (!((Player) org).isLocalPlayer()) return;
+        }
+        else {
+            return;
+        }
+
+        //if (!isEnd || linking)
+        //Minecraft.getInstance().options.fov.set((int)fovO);
+        patched = patch;
         orginal = org;
         yawLock = org.getViewYRot(0);
         posLock = org.position();

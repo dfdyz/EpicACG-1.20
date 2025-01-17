@@ -20,14 +20,16 @@ public class CameraAnimation {
     public final FloatSheet z;
     public final FloatSheet rx;
     public final FloatSheet ry;
+    public final FloatSheet rz;
     public final FloatSheet fov;
     public final float totalTime;
-    public CameraAnimation(FloatSheet x, FloatSheet y, FloatSheet z, FloatSheet rx, FloatSheet ry, FloatSheet fov) {
+    public CameraAnimation(FloatSheet x, FloatSheet y, FloatSheet z, FloatSheet rx, FloatSheet ry, FloatSheet rz,FloatSheet fov) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.rx = rx;
         this.ry = ry;
+        this.rz = rz;
         this.fov = fov;
 
         float tt = Math.max(x.getMaxTime(), y.getMaxTime());
@@ -44,17 +46,12 @@ public class CameraAnimation {
                 z.getValueByTime(time),
                 rx.getValueByTime(time),
                 ry.getValueByTime(time),
+                rz.getValueByTime(time),
                 fov.getValueByTime(time)
         );
     }
 
-
     public static CameraAnimation load(ResourceLocation resourceLocation){
-        return load(resourceLocation, 1f);
-    }
-
-
-    public static CameraAnimation load(ResourceLocation resourceLocation, float timeScale){
         Minecraft mc = Minecraft.getInstance();
 
         try {
@@ -69,7 +66,11 @@ public class CameraAnimation {
             String json = os.toString();
             JsonObject animJson = JsonParser.parseString(json).getAsJsonObject();
 
-            FloatSheet x,y,z,rx,ry,fov;
+            FloatSheet x,y,z,rx,ry,rz,fov;
+            float timeScale = 1.f;
+
+            if(animJson.has("time_scale"))
+                timeScale = animJson.get("time_scale").getAsFloat();
 
             // pos - time sheet
             JsonObject sheets = animJson.getAsJsonObject("pos");
@@ -119,8 +120,10 @@ public class CameraAnimation {
             sheets = animJson.getAsJsonObject("rot");
             rx = new FloatSheet();
             ry = new FloatSheet();
+            rz = new FloatSheet();
             rx.getFromJson(sheets, "rx");
             ry.getFromJson(sheets, "ry");
+            rz.getFromJson(sheets, "rz");
 
             //fov
             sheets = animJson.getAsJsonObject("fov");
@@ -132,10 +135,11 @@ public class CameraAnimation {
             z.scaleTimes(timeScale);
             rx.scaleTimes(timeScale);
             ry.scaleTimes(timeScale);
+            rz.scaleTimes(timeScale);
             fov.scaleTimes(timeScale);
 
             EpicACG.LOGGER.info("Load Camera Animation: " + resourceLocation);
-            return new CameraAnimation(x,y,z,rx,ry,fov);
+            return new CameraAnimation(x,y,z,rx,ry,rz,fov);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -145,16 +149,18 @@ public class CameraAnimation {
         public final Vec3 pos;
         public final float rotY;
         public final float rotX;
+        public final float rotZ;
         public final float fov;
-        public Pose(Vec3 pos, float rotX, float rotY, float fov){
+        public Pose(Vec3 pos, float rotX, float rotY, float rotZ, float fov){
             this.pos = pos;
             this.rotY = rotY;
             this.rotX = rotX;
+            this.rotZ = rotZ;
             this.fov = fov;
         }
 
-        public Pose(float x, float y, float z, float rotX, float rotY, float fov){
-            this(new Vec3(x,y,z), rotX, rotY, fov);
+        public Pose(float x, float y, float z, float rotX, float rotY,float rotZ,float fov){
+            this(new Vec3(x,y,z), rotX, rotY, rotZ, fov);
         }
 
         @Override
@@ -163,6 +169,7 @@ public class CameraAnimation {
                     "pos=" + pos +
                     ", rotY=" + rotY +
                     ", rotX=" + rotX +
+                    ", rotZ=" + rotZ +
                     ", fov=" + fov +
                     '}';
         }

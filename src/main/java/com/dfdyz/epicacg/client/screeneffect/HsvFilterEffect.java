@@ -26,8 +26,16 @@ public class HsvFilterEffect extends ScreenEffectBase {
     }
 
     static final float recovery = 15;
+
+    float getTimeChannel(){
+        if(age < 5){
+            return age / 5f;
+        }
+        else return Math.max(Math.min(1, (lifetime - age) / recovery), 0);
+    }
+
     public float getAlpha(){
-        return alpha * Math.max(Math.min(1, (lifetime - age) / recovery), 0);
+        return alpha * getTimeChannel();
     }
 
 

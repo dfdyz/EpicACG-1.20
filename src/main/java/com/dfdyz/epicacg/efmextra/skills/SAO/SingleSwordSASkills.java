@@ -49,7 +49,6 @@ public class SingleSwordSASkills  extends SimpleWeaponSASkill implements IMutiSp
         ResourceLocation name = this.getRegistryName();
         noPower.add(new ResourceLocation(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png"));
         noPower.add(new ResourceLocation(name.getNamespace(), "textures/gui/skills/single/judgement_cut.png"));
-
     }
 
     public static SimpleWeaponInnateSkill.Builder createBuilder(ResourceLocation resourceLocation) {

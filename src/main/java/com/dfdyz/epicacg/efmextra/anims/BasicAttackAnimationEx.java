@@ -5,9 +5,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.animation.Joint;
+import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.*;
@@ -15,6 +17,8 @@ import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.HitEntityList;
+import yesman.epicfight.api.utils.math.OpenMatrix4f;
+import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 
@@ -40,11 +44,18 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
     public BasicAttackAnimationEx(float convertTime, String path, Armature armature, Phase... phases) {
         super(convertTime, path, armature, phases);
         reBindPhasesStates(false, false);
+        addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
+        addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true);
     }
 
     public BasicAttackAnimationEx Lock(boolean turning, boolean interrupt_phase){
         reBindPhasesStates(turning, interrupt_phase);
         return this;
+    }
+
+    @Override
+    protected void bindPhaseState(Phase phase) {
+        super.bindPhaseState(phase);
     }
 
     private void reBindPhasesStates(boolean turningLockedAlways, boolean interrupt_phase){
@@ -70,8 +81,6 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
         float prevPoseTime = prevState.attacking() ? prevElapsedTime : phase.preDelay;
         float poseTime = state.attacking() ? elapsedTime : phase.contact;
         List<Entity> list = this.getPhaseByTime(elapsedTime).getCollidingEntities(entitypatch, this, prevPoseTime, poseTime, this.getPlaySpeed(entitypatch, this));
-
-
 
         if (!list.isEmpty()) {
             HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AnimationProperty.AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
@@ -113,6 +122,8 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
         }
     }
 
+
+
     protected void bindPhaseState(Phase phase, boolean turningLockedAlways, int interrupt_flag) {
         float preDelay = phase.preDelay;
 
@@ -123,25 +134,25 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
         this.stateSpectrumBlueprint
                 .newTimePair(phase.start, preDelay)
                 .addState(EntityState.PHASE_LEVEL, 1)
-                .newTimePair(phase.start, phase.contact + 0.01F)
-                .addState(EntityState.CAN_SKILL_EXECUTION, false)
+                //.newTimePair(phase.start, phase.contact + 0.01F)
+                //.addState(EntityState.CAN_SKILL_EXECUTION, false)
                 .newTimePair(phase.start, phase.recovery)
                 .addState(EntityState.MOVEMENT_LOCKED, true)
 
                 .newTimePair(phase.start, phase.end)
                 .addState(EntityState.INACTION, true)
+
                 .newTimePair(preDelay, phase.contact + 0.01F)
                 .addState(EntityState.ATTACKING, true)
                 .addState(EntityState.PHASE_LEVEL, 2)
+
                 .newTimePair(phase.contact + 0.01F, phase.end)
-                .addState(EntityState.PHASE_LEVEL, 3)
-        ;
+                .addState(EntityState.PHASE_LEVEL, 3);
 
         if(turningLockedAlways){
             this.stateSpectrumBlueprint
                     .newTimePair(phase.start, phase.end)
-                    .addState(EntityState.TURNING_LOCKED, true)
-                    .addState(EntityState.UPDATE_LIVING_MOTION, false);
+                    .addState(EntityState.TURNING_LOCKED, true);
         }
         else {
             this.stateSpectrumBlueprint
@@ -152,19 +163,44 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
         if(interrupt_flag == 0){
             this.stateSpectrumBlueprint
                     .newTimePair(phase.start, phase.recovery)
+                    .addState(EntityState.CAN_SKILL_EXECUTION, false)
+                    .addState(EntityState.UPDATE_LIVING_MOTION, false)
                     .addState(EntityState.CAN_BASIC_ATTACK, false);
         }
         else if(interrupt_flag == 2){
             this.stateSpectrumBlueprint
                     .newTimePair(0, phase.recovery)
+                    .addState(EntityState.CAN_SKILL_EXECUTION, false)
+                    .addState(EntityState.UPDATE_LIVING_MOTION, false)
                     .addState(EntityState.CAN_BASIC_ATTACK, false);
         }
 
     }
 
 
+    /*
     @Override
     public void modifyPose(DynamicAnimation animation, Pose pose, LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-        super.modifyPose(animation, pose, entitypatch, time, partialTicks);
-    }
+        //super.modifyPose(animation, pose, entitypatch, time, partialTicks);
+
+        JointTransform jt = pose.getOrDefaultTransform("Root");
+        Vec3f jointPosition = jt.translation();
+        OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTrasnform().removeTranslation();
+        OpenMatrix4f toOrigin = OpenMatrix4f.invert(toRootTransformApplied, (OpenMatrix4f)null);
+        Vec3f worldPosition = OpenMatrix4f.transform3v(toRootTransformApplied, jointPosition, (Vec3f)null);
+
+
+
+        OpenMatrix4f.transform3v(toOrigin, worldPosition, worldPosition);
+        jointPosition.x = worldPosition.x;
+        jointPosition.y = worldPosition.y;
+        jointPosition.z = worldPosition.z;
+
+        entitypatch.poseTick(animation, pose, time, partialTicks);
+        this.getProperty(AnimationProperty.StaticAnimationProperty.POSE_MODIFIER).ifPresent((poseModifier) -> {
+            poseModifier.modify(animation, pose, entitypatch, time, partialTicks);
+        });
+
+
+    }*/
 }
