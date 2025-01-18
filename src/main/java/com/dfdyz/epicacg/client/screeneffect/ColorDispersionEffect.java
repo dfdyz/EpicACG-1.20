@@ -3,7 +3,7 @@ package com.dfdyz.epicacg.client.screeneffect;
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
-import com.dfdyz.epicacg.registry.PostEffects;
+import com.dfdyz.epicacg.registry.PostPasses;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +35,7 @@ public class ColorDispersionEffect extends ScreenEffectBase {
         public void PostEffectHandler() {
             //System.out.println("handle");
             RenderTarget tmp = TargetManager.getTarget(color_dispersion_tmp);
-            PostEffects.blit.process(Minecraft.getInstance().getMainRenderTarget(), tmp);
+            PostPasses.blit.process(Minecraft.getInstance().getMainRenderTarget(), tmp);
             float t = Math.max(0, 1.f - (1.0f / effect.lifetime * effect.age));
             t = Mth.sqrt(t);
 
@@ -62,7 +62,7 @@ public class ColorDispersionEffect extends ScreenEffectBase {
             }
 
 
-            PostEffects.color_dispersion.process(tmp, Minecraft.getInstance().getMainRenderTarget(),
+            PostPasses.color_dispersion.process(tmp, Minecraft.getInstance().getMainRenderTarget(),
                         1 + .15f * t,  1 + .075f * t, 1, rm, gm, bm
                     );
         }

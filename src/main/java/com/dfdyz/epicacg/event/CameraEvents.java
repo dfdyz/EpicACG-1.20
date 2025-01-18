@@ -120,7 +120,8 @@ public class CameraEvents {
             }
             else {
                 var animPlayer = patched.getClientAnimator().baseLayer.animationPlayer;
-                time = MathUtils.lerpBetween(animPlayer.getPrevElapsedTime(), animPlayer.getElapsedTime(), (float) partialTicks);
+                time = (float) (animPlayer.getPrevElapsedTime() +
+                        (animPlayer.getElapsedTime() - animPlayer.getPrevElapsedTime()) * partialTicks);
             }
 
             pose = currentAnim.getPose(time);

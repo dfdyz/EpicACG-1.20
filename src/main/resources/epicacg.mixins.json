@@ -9,7 +9,9 @@
     "MixinGameRenderer",
     "MixinLevelRenderer",
     "MixinLivingEntity",
-    "MixinParticleEngine"
+    "MixinParticleEngine",
+    "compat.MixinParticleEngineA",
+    "compat.MixinParticleEngineB"
   ],
   "mixins": [
     "MixinMob",

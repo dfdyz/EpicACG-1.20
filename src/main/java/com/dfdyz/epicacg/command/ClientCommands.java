@@ -1,16 +1,21 @@
 package com.dfdyz.epicacg.command;
 
 import com.dfdyz.epicacg.EpicACG;
+import com.dfdyz.epicacg.client.particle.HSR.BlackHoleParticle;
 import com.dfdyz.epicacg.config.ClientConfig;
+import com.dfdyz.epicacg.registry.Effeks;
 import com.dfdyz.epicacg.registry.MyAnimations;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
@@ -32,19 +37,16 @@ public class ClientCommands {
 
             //MyModels.LoadOtherModel();
 
-            //Player player = Minecraft.getInstance().player;
+            Player player = Minecraft.getInstance().player;
             //LocalPlayerPatch playerPatch = EpicFightCapabilities.getEntityPatch(player, LocalPlayerPatch.class);
-            /*
             Vec3 pos = Minecraft.getInstance().player.position();
+            //pos = pos.add(5,-5,5);
 
-            AirWaveParticle particle = new AirWaveParticle(
-                    Minecraft.getInstance().level, pos.x, pos.y, pos.z, 1, 150
-            );
+            BlackHoleParticle p = new BlackHoleParticle((ClientLevel) player.level(), pos, 120);
+            Minecraft.getInstance().particleEngine.add(p);
 
-            RenderUtils.AddParticle(Minecraft.getInstance().level, particle);
-
-             */
-
+            //System.out.println("AAAA");
+            //AAALevel.addParticle(player.level(), false, Effeks.BLACK_HOLE.clone().position(pos));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -67,6 +69,7 @@ public class ClientCommands {
                             //BladeTrailTextureLoader.ReleaseAll();
                             //BladeTrailTextureLoader.Load();
                             MyAnimations.LoadCamAnims();
+                            //Effeks.load();
                             MSGClient("[EpicACG]Reload All Config.");
                             return Command.SINGLE_SUCCESS;
                         }))

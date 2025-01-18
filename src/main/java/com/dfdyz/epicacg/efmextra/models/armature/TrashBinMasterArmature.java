@@ -1,4 +1,4 @@
-package com.dfdyz.epicacg.models.armature;
+package com.dfdyz.epicacg.efmextra.models.armature;
 
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.model.Armature;

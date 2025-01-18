@@ -2,6 +2,7 @@ package com.dfdyz.epicacg.client.render;
 
 
 import com.dfdyz.epicacg.EpicACG;
+import com.dfdyz.epicacg.client.render.custom.BlockHoleRenderType;
 import com.dfdyz.epicacg.client.render.custom.BloomParticleRenderType;
 import com.dfdyz.epicacg.client.render.custom.SpaceBrokenRenderType;
 import com.dfdyz.epicacg.utils.RenderUtils;
@@ -69,7 +70,8 @@ public class EpicACGRenderType {
     public static SpaceBrokenRenderType SpaceBroken2 = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken" ), 1);
 
     public static SpaceBrokenRenderType SpaceBrokenEnd = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken_end" ), RenderUtils.GetTexture("particle/glass"), 0, 4);
-
+    public static BlockHoleRenderType BlackHole = new BlockHoleRenderType(new ResourceLocation(EpicACG.MODID, "black_hole"),
+            GetTexture("particle/black_hole"));
 
 
     /*

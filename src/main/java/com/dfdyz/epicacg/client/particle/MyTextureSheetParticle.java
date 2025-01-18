@@ -64,7 +64,7 @@ public class MyTextureSheetParticle extends SingleQuadParticle {
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float pt) {
-        RenderUtils.GLSetTexture(texture);
+        //RenderUtils.GLSetTexture(texture);
 
         Vec3 vec3 = camera.getPosition();
         float rt = (age+pt)/lifetime;

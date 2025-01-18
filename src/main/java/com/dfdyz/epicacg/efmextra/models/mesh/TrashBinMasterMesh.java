@@ -1,4 +1,4 @@
-package com.dfdyz.epicacg.models.mesh;
+package com.dfdyz.epicacg.efmextra.models.mesh;
 
 import yesman.epicfight.api.client.model.AnimatedMesh;
 import yesman.epicfight.api.client.model.AnimatedVertexBuilder;

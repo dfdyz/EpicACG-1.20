@@ -42,7 +42,7 @@ public class EpicACG
         if(FMLEnvironment.dist == Dist.CLIENT){
             bus.addListener(EventPriority.LOWEST, this::regClientReloader);
             bus.addListener(Particles::registryParticles);
-            bus.addListener(PostEffects::register);
+            bus.addListener(PostPasses::register);
             bus.addListener(this::setupClient);
             bus.addListener(LoadingEvents::onModelRegister);
             bus.addListener(LoadingEvents::onModelBaked);
@@ -87,6 +87,7 @@ public class EpicACG
         MyAnimations.LoadCamAnims();
         MyModels.LoadOtherModel();
         event.enqueueWork(LoadingEvents::RegItemModelOverride);
+        //Effeks.load();
 
         try {
             ClientConfig.Load(false);

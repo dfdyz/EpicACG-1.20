@@ -1,7 +1,7 @@
 package com.dfdyz.epicacg.client.render.pipeline;
 
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
-import com.dfdyz.epicacg.registry.PostEffects;
+import com.dfdyz.epicacg.registry.PostPasses;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -25,6 +25,7 @@ import static net.minecraft.client.Minecraft.ON_OSX;
 public abstract class PostParticleRenderType implements ParticleRenderType {
     private final ResourceLocation renderTypeID;
     private final ResourceLocation texture;
+    public int priority = 0;
 
     //protected boolean started = false;
 
@@ -92,8 +93,8 @@ public abstract class PostParticleRenderType implements ParticleRenderType {
     static ResourceLocation tempTarget = new ResourceLocation("epicacg:depth_cull_temp");
     public static void doDepthCull(RenderTarget source, RenderTarget DepthBuffer){
         RenderTarget tmp = TargetManager.getTarget(tempTarget);
-        PostEffects.blit.process(source, tmp);
-        PostEffects.depth_cull.process(tmp, DepthBuffer, source);
+        PostPasses.blit.process(source, tmp);
+        PostPasses.depth_cull.process(tmp, DepthBuffer, source);
         TargetManager.ReleaseTarget(tempTarget);
     }
 
@@ -101,7 +102,7 @@ public abstract class PostParticleRenderType implements ParticleRenderType {
         //RenderTarget blur = createTempTarget(source);
         //RenderTarget blur2 = createTempTarget(source);
 
-        PostEffects.blit.process(source, output,
+        PostPasses.blit.process(source, output,
                 (effect) ->
                 {}
         );

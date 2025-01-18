@@ -1,9 +1,8 @@
 package com.dfdyz.epicacg.client.screeneffect;
 
 import com.dfdyz.epicacg.EpicACG;
-import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
-import com.dfdyz.epicacg.registry.PostEffects;
+import com.dfdyz.epicacg.registry.PostPasses;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -58,9 +57,9 @@ public class HsvFilterEffect extends ScreenEffectBase {
         @Override
         public void PostEffectHandler() {
             RenderTarget tmp = TargetManager.getTarget(hsv_filter_tmp);
-            PostEffects.blit.process(Minecraft.getInstance().getMainRenderTarget(), tmp);
+            PostPasses.blit.process(Minecraft.getInstance().getMainRenderTarget(), tmp);
             //System.out.println("handle");
-            PostEffects.hsv_filter.process(tmp, Minecraft.getInstance().getMainRenderTarget(), 1, 0.97f, effect.getAlpha());
+            PostPasses.hsv_filter.process(tmp, Minecraft.getInstance().getMainRenderTarget(), 1, 0.97f, effect.getAlpha());
         }
     }
 

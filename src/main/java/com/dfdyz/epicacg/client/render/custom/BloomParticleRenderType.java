@@ -5,7 +5,7 @@ import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.ScaledTarget;
 import com.dfdyz.epicacg.config.ClientConfig;
-import com.dfdyz.epicacg.registry.PostEffects;
+import com.dfdyz.epicacg.registry.PostPasses;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -39,36 +39,36 @@ public class BloomParticleRenderType extends PostParticleRenderType {
             RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL12.GL_LINEAR);
 
             if(ClientConfig.cfg.BloomMode == 0){
-                PostEffects.downSampler.process(src, blur[0]);    //2
-                PostEffects.downSampler.process(blur[0], blur[1]);//4
-                PostEffects.downSampler.process(blur[1], blur[2]);//8
-                PostEffects.downSampler.process(blur[2], blur[3]);//16
-                PostEffects.downSampler.process(blur[3], blur[4]);//32
+                PostPasses.downSampler.process(src, blur[0]);    //2
+                PostPasses.downSampler.process(blur[0], blur[1]);//4
+                PostPasses.downSampler.process(blur[1], blur[2]);//8
+                PostPasses.downSampler.process(blur[2], blur[3]);//16
+                PostPasses.downSampler.process(blur[3], blur[4]);//32
                 //PostEffects.downSampler.process(blur[4], blur[5]);//64
 
                 //PostEffects.upSampler.process(blur[5], blur_[4], blur[4]);   // 64 -> 32_
-                PostEffects.upSampler.process(blur[4], blur_[3], blur[3]);  // 32 -> 16_
-                PostEffects.upSampler.process(blur_[3], blur_[2], blur[2]);   // 16 -> 8_
-                PostEffects.upSampler.process(blur_[2], blur_[1], blur[1]);  // 8_ -> 4_
-                PostEffects.upSampler.process(blur_[1], blur_[0], blur[0]);  // 4_ -> 2_
+                PostPasses.upSampler.process(blur[4], blur_[3], blur[3]);  // 32 -> 16_
+                PostPasses.upSampler.process(blur_[3], blur_[2], blur[2]);   // 16 -> 8_
+                PostPasses.upSampler.process(blur_[2], blur_[1], blur[1]);  // 8_ -> 4_
+                PostPasses.upSampler.process(blur_[1], blur_[0], blur[0]);  // 4_ -> 2_
 
-                PostEffects.unity_composite.process(blur_[0], temp, src, Minecraft.getInstance().getMainRenderTarget());
+                PostPasses.unity_composite.process(blur_[0], temp, src, Minecraft.getInstance().getMainRenderTarget());
 
-                PostEffects.blit.process(temp, Minecraft.getInstance().getMainRenderTarget());
+                PostPasses.blit.process(temp, Minecraft.getInstance().getMainRenderTarget());
             }
             else {
-                PostEffects.blur.process(src, blur[0], 1, 0 ,3);     // src -> 2
-                PostEffects.blur.process(blur[0], blur_[0], 0,1 ,3); // 2 -> 2_
-                PostEffects.blur.process(blur_[0], blur[1], 1, 0 ,5); // 2_ -> 4
-                PostEffects.blur.process(blur[1], blur_[1], 1, 0 ,5);     // 4 -> 4_
-                PostEffects.blur.process(blur_[1], blur[2], 1, 0 ,7); // 4_ -> 8
-                PostEffects.blur.process(blur[2], blur_[2], 1, 0 ,7);     // 8 -> 8_
-                PostEffects.blur.process(blur_[2], blur[3], 1, 0 ,9); // 8_ -> 16
-                PostEffects.blur.process(blur[3], blur_[3], 1, 0 ,9);     // 16 -> 16_
+                PostPasses.blur.process(src, blur[0], 1, 0 ,3);     // src -> 2
+                PostPasses.blur.process(blur[0], blur_[0], 0,1 ,3); // 2 -> 2_
+                PostPasses.blur.process(blur_[0], blur[1], 1, 0 ,5); // 2_ -> 4
+                PostPasses.blur.process(blur[1], blur_[1], 1, 0 ,5);     // 4 -> 4_
+                PostPasses.blur.process(blur_[1], blur[2], 1, 0 ,7); // 4_ -> 8
+                PostPasses.blur.process(blur[2], blur_[2], 1, 0 ,7);     // 8 -> 8_
+                PostPasses.blur.process(blur_[2], blur[3], 1, 0 ,9); // 8_ -> 16
+                PostPasses.blur.process(blur[3], blur_[3], 1, 0 ,9);     // 16 -> 16_
 
-                PostEffects.ue_composite.process(src, temp, blur_[0], blur_[1], blur_[2], blur_[3]);
+                PostPasses.ue_composite.process(src, temp, blur_[0], blur_[1], blur_[2], blur_[3]);
 
-                PostEffects.blit.process(temp, Minecraft.getInstance().getMainRenderTarget());
+                PostPasses.blit.process(temp, Minecraft.getInstance().getMainRenderTarget());
 
             }
 

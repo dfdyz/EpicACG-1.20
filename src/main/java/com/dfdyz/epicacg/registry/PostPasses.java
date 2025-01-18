@@ -10,7 +10,7 @@ import net.minecraftforge.client.event.RegisterShadersEvent;
 import java.io.IOException;
 
 @OnlyIn(Dist.CLIENT)
-public class PostEffects {
+public class PostPasses {
 
     public static PostPassBase blit;
     public static Blur blur;
@@ -23,6 +23,7 @@ public class PostEffects {
     public static UEComposite ue_composite;
     public static ColorDispersion color_dispersion;
     public static HsvFilter hsv_filter;
+    public static BlackHole black_hole;
 
 
     public static void register(RegisterShadersEvent event){
@@ -39,6 +40,7 @@ public class PostEffects {
             space_broken = new SpaceBroken("epicacg:space_broken",rm);
             depth_cull = new DepthCull("epicacg:depth_cull", rm);
             color_dispersion = new ColorDispersion("epicacg:color_dispersion", rm);
+            black_hole = new BlackHole("epicacg:black_hole",rm);
 
             hsv_filter = new HsvFilter("epicacg:hsv_filter", rm);
 

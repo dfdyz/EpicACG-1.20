@@ -4,7 +4,7 @@ import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
-import com.dfdyz.epicacg.registry.PostEffects;
+import com.dfdyz.epicacg.registry.PostPasses;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -54,8 +54,8 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
             this.priority = priority;
         }
 
-        private ResourceLocation space_broken_mask = new ResourceLocation(EpicACG.MODID, "space_broken_mask_" + priority);
-        private static ResourceLocation tmpTarget = new ResourceLocation(EpicACG.MODID, "space_broken_tmp");
+        //private ResourceLocation space_broken_mask = new ResourceLocation(EpicACG.MODID, "space_broken_mask_" + priority);
+        private static final ResourceLocation tmpTarget = new ResourceLocation(EpicACG.MODID, "space_broken_tmp");
 
         @Override
         public void suspend() {
@@ -78,13 +78,13 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
             RenderTarget tmp = TargetManager.getTarget(tmpTarget);
             RenderTarget main = Minecraft.getInstance().getMainRenderTarget();
             //doDepthCull(src, depth);
-            PostEffects.space_broken.process(main, src, tmp);
-            PostEffects.blit.process(tmp, main);
+            PostPasses.space_broken.process(main, src, tmp);
+            PostPasses.blit.process(tmp, main);
         }
 
         @Override
         public void PostEffectHandler() {
-            RenderTarget target = TargetManager.getTarget(space_broken_mask);
+            //RenderTarget target = TargetManager.getTarget(space_broken_mask);
             handlePasses(bufferTarget);
         }
     }
