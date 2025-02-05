@@ -2,8 +2,10 @@ package com.dfdyz.epicacg.command;
 
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.particle.HSR.BlackHoleParticle;
+import com.dfdyz.epicacg.client.particle.HSR.GravLensParticle;
+import com.dfdyz.epicacg.client.particle.HSR.SubBlackHoleParticle;
+import com.dfdyz.epicacg.client.particle.HSR.SubSpaceParticle;
 import com.dfdyz.epicacg.config.ClientConfig;
-import com.dfdyz.epicacg.registry.Effeks;
 import com.dfdyz.epicacg.registry.MyAnimations;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -33,17 +35,26 @@ public class ClientCommands {
     protected static LiteralArgumentBuilder<CommandSourceStack> command;
 
     public static void Debug(){
+        //if(true) return;
         try{
-
             //MyModels.LoadOtherModel();
 
             Player player = Minecraft.getInstance().player;
             //LocalPlayerPatch playerPatch = EpicFightCapabilities.getEntityPatch(player, LocalPlayerPatch.class);
-            Vec3 pos = Minecraft.getInstance().player.position();
+            Vec3 pos = player.position();
             //pos = pos.add(5,-5,5);
 
-            BlackHoleParticle p = new BlackHoleParticle((ClientLevel) player.level(), pos, 120);
-            Minecraft.getInstance().particleEngine.add(p);
+            BlackHoleParticle bhp = new BlackHoleParticle((ClientLevel) player.level(), pos, 200);
+            SubSpaceParticle ssp = new SubSpaceParticle((ClientLevel) player.level(), pos, 200);
+
+            var arm = new Vec3(30, 0, 0).yRot((float) Math.toRadians(-player.getYRot()-90));
+            SubBlackHoleParticle sbhp = new SubBlackHoleParticle((ClientLevel) player.level(), pos.add(arm), 210);
+
+            GravLensParticle glp = new GravLensParticle((ClientLevel) player.level(), pos, 200);
+            Minecraft.getInstance().particleEngine.add(ssp);
+            Minecraft.getInstance().particleEngine.add(sbhp);
+            Minecraft.getInstance().particleEngine.add(glp);
+            Minecraft.getInstance().particleEngine.add(bhp);
 
             //System.out.println("AAAA");
             //AAALevel.addParticle(player.level(), false, Effeks.BLACK_HOLE.clone().position(pos));

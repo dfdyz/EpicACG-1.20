@@ -2,14 +2,13 @@ package com.dfdyz.epicacg.client.render;
 
 
 import com.dfdyz.epicacg.EpicACG;
-import com.dfdyz.epicacg.client.render.custom.BlockHoleRenderType;
-import com.dfdyz.epicacg.client.render.custom.BloomParticleRenderType;
-import com.dfdyz.epicacg.client.render.custom.SpaceBrokenRenderType;
+import com.dfdyz.epicacg.client.render.custom.*;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -17,11 +16,12 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
 import static com.dfdyz.epicacg.utils.RenderUtils.GetTexture;
-import static net.minecraft.client.renderer.GameRenderer.positionColorLightmapShader;
+import static net.minecraft.client.renderer.GameRenderer.*;
 
 @OnlyIn(Dist.CLIENT)
 public class EpicACGRenderType {
@@ -66,13 +66,34 @@ public class EpicACGRenderType {
         }
     }
 
+    private static int triangleIdx = 0;
+    public static final HashMap<ResourceLocation, EpicACGTriangleParticleRenderType> TriangleRenderTypes = Maps.newHashMap();
+    public static EpicACGTriangleParticleRenderType getTriangleRenderTypeByTexture(ResourceLocation texture){
+        if(TriangleRenderTypes.containsKey(texture)){
+            return TriangleRenderTypes.get(texture);
+        }
+        else {
+            EpicACGTriangleParticleRenderType rdt = new EpicACGTriangleParticleRenderType("epicacg:triangle_particle_" + triangleIdx++, texture);
+            TriangleRenderTypes.put(texture,rdt);
+            return rdt;
+        }
+    }
+
+
     public static SpaceBrokenRenderType SpaceBroken1 = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken" ), 0);
     public static SpaceBrokenRenderType SpaceBroken2 = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken" ), 1);
 
     public static SpaceBrokenRenderType SpaceBrokenEnd = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken_end" ), RenderUtils.GetTexture("particle/glass"), 0, 4);
-    public static BlockHoleRenderType BlackHole = new BlockHoleRenderType(new ResourceLocation(EpicACG.MODID, "black_hole"),
+    public static BlockHoleRenderType GravLens = new BlockHoleRenderType(new ResourceLocation(EpicACG.MODID, "black_hole"),
             GetTexture("particle/black_hole"));
 
+    public static SubMaskRenderType SubMask = new SubMaskRenderType(new ResourceLocation(EpicACG.MODID, "sub_mask"),
+            GetTexture("none")
+    );
+
+    public static SubSpaceRenderType SubSpace_BlackHole = new SubSpaceRenderType(new ResourceLocation(EpicACG.MODID, "sub_space"),
+            GetTexture("none")
+    );
 
     /*
             //new EpicACGQuadParticleRenderType("textures/particle/genshin_bow", "GENSHIN_BOW");
@@ -90,6 +111,45 @@ public class EpicACGRenderType {
 */
 
 
+    public static class EpicACGTriangleParticleRenderType implements ParticleRenderType {
+        private final ResourceLocation Texture;
+        private final String Name;
+
+        public EpicACGTriangleParticleRenderType(String name, ResourceLocation tex) {
+            this.Texture = tex;
+            Name = name;
+        }
+
+        public void begin(@NotNull BufferBuilder p_107448_, @NotNull TextureManager p_107449_) {
+            RenderSystem.enableBlend();
+            //RenderSystem.disableCull();
+            RenderSystem.enableCull();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
+            //Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+
+            //System.out.println("AAAAAA");
+
+            if(Texture != null) RenderUtils.GLSetTexture(Texture);
+            p_107448_.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
+        }
+
+        public void end(Tesselator tesselator) {
+            tesselator.getBuilder().setQuadSorting(VertexSorting.ORTHOGRAPHIC_Z);
+            tesselator.end();
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableCull();
+        }
+
+        public String toString() {
+            return Name;
+        }
+    };
+
+
     public static class EpicACGQuadParticleRenderType implements ParticleRenderType {
         private final ResourceLocation Texture;
         private final String Name;
@@ -100,18 +160,8 @@ public class EpicACGRenderType {
         }
 
         public void begin(BufferBuilder p_107448_, TextureManager p_107449_) {
-            //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            //System.out.println("aaaaaaaaa");
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
-
-
-            /*
-            RenderSystem.blendFuncSeparate(
-                    GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-             */
 
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.enableDepthTest();
@@ -138,8 +188,11 @@ public class EpicACGRenderType {
 
     public static ShaderInstance getPositionColorLightmapShader(){
         return positionColorLightmapShader;
-
     }
+    public static ShaderInstance getPositionColorTexShader(){
+        return positionColorTexLightmapShader;
+    }
+
 
     public static final ResourceLocation NoneTexture = RenderUtils.GetTexture("none");
     public static final ParticleRenderType TRANSLUCENT = new ParticleRenderType() {

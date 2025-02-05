@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines.*;
+import static com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines.isActive;
+import static net.minecraft.client.Minecraft.ON_OSX;
 
 public class SpaceBrokenRenderType extends PostParticleRenderType {
 
@@ -23,12 +25,14 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
         super(name ,texture);
         this.layer = layer;
         vertex = vertexCount;
+        priority = 1000;
     }
 
     public SpaceBrokenRenderType(ResourceLocation name, int layer){
         super(name ,RenderUtils.GetTexture("particle/sparks"));
         this.layer = layer;
         vertex = 3;
+        priority = 1000;
     }
 
     @Override
@@ -58,12 +62,38 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
         private static final ResourceLocation tmpTarget = new ResourceLocation(EpicACG.MODID, "space_broken_tmp");
 
         @Override
+        public void start() {
+            if(started){
+                if(isActive()){
+                    //ClientCommands.Debug();
+                    //bufferTarget.copyDepthFrom(getSource());
+                    bufferTarget.bindWrite(false);
+                }
+            }
+            else {
+                if(bufferTarget == null){
+                    bufferTarget = TargetManager.getTarget(name);
+                    bufferTarget.clear(ON_OSX);
+                }
+
+                RenderTarget main = getSource();
+                if(isActive()){
+                    //System.out.println("push")
+                    bufferTarget.copyDepthFrom(main);
+                    PostEffectQueue.add(this);
+                    bufferTarget.bindWrite(false);
+                    started = true;
+                }
+                //System.out.println("push");
+            }
+        }
+
+        @Override
         public void suspend() {
             if(PostEffectPipelines.isActive()){
                 //System.out.println("aaaaa");
                 bufferTarget.unbindWrite();
                 bufferTarget.unbindRead();
-
                 RenderTarget rt = getSource();
                 rt.bindWrite(false);
             }
@@ -80,6 +110,7 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
             //doDepthCull(src, depth);
             PostPasses.space_broken.process(main, src, tmp);
             PostPasses.blit.process(tmp, main);
+            TargetManager.ReleaseTarget(tmpTarget);
         }
 
         @Override

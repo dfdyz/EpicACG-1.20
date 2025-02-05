@@ -1,14 +1,14 @@
 package com.dfdyz.epicacg.client.particle.DMC;
 
+import com.dfdyz.epicacg.client.model.custom.NoTextureJsonModel;
 import com.dfdyz.epicacg.client.render.EpicACGRenderType;
 import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.registry.MyModels;
 import com.dfdyz.epicacg.utils.MathUtils;
 import com.dfdyz.epicacg.utils.RenderUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.Camera;
@@ -16,15 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.phys.Vec3;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.dfdyz.epicacg.utils.MathUtils.Quat_One;
 
@@ -52,15 +44,15 @@ public class SpaceBrokenParticle extends Particle {
     public void render(VertexConsumer buffer, Camera camera, float pt) {
         //float at = this.age+pt;
         if(!PostEffectPipelines.isActive()) return;
+        /*
         if(layer == 0){
             EpicACGRenderType.SpaceBroken1.callPipeline();
         }
         else {
             EpicACGRenderType.SpaceBroken2.callPipeline();
         }
-
+*/
         Vec3 vec3 = camera.getPosition();
-
 
         float f = (float)(this.x - vec3.x());
         float f1 = (float)(this.y - vec3.y() + (layer == 0 ? 0.2f : 0.4f));
@@ -92,12 +84,14 @@ public class SpaceBrokenParticle extends Particle {
 
         float ya;
         for(int index = 0; index < MyModels.SpaceBrokenModel.Face.size(); ++index) {
-            OBJ_JSON.Triangle triangle = MyModels.SpaceBrokenModel.Face.get(index);
+            NoTextureJsonModel.Triangle triangle = MyModels.SpaceBrokenModel.Face.get(index);
             Vector3f vertex1 = MyModels.SpaceBrokenModel.Positions.get(triangle.x-1).toBugJumpFormat();
             Vector3f vertex2 = MyModels.SpaceBrokenModel.Positions.get(triangle.y-1).toBugJumpFormat();
             Vector3f vertex3 = MyModels.SpaceBrokenModel.Positions.get(triangle.z-1).toBugJumpFormat();
 
             vertex1.rotate(rot);
+            vertex2.rotate(rot);
+            vertex3.rotate(rot);
 
             vertex1.mul(sss);
             vertex2.mul(sss);
@@ -130,7 +124,7 @@ public class SpaceBrokenParticle extends Particle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public @NotNull ParticleRenderType getRenderType() {
         return layer == 0 ? EpicACGRenderType.SpaceBroken1 : EpicACGRenderType.SpaceBroken2;
     }
 
@@ -160,73 +154,7 @@ public class SpaceBrokenParticle extends Particle {
         }
     }
 
-    public static class OBJ_JSON{
-        public static class Triangle {
-            public int x,y,z;
-            public vec3f Normal;
-            public void UpdateNormal(List<vec3f> pos){
-                Vector3f p1 = pos.get(x-1).toBugJumpFormat();
-                Vector3f p2 = pos.get(y-1).toBugJumpFormat();
-                Vector3f p3 = pos.get(z-1).toBugJumpFormat();
 
-
-                p1.sub(p2);  //v1
-                p1.normalize();
-
-                p2.sub(p3);  //v2
-                p2.normalize();
-
-                p1.cross(p2); //normal
-                p1.normalize();
-
-                Normal = new vec3f(p1.x(), p2.y(), p3.z());
-            }
-
-        }
-
-        public static class vec3f {
-            public float x,y,z;
-            public vec3f(float x, float y, float z){
-                this.x = x;
-                this.y = y;
-                this.z = z;
-            }
-            public Vector3f toBugJumpFormat(){
-                return new Vector3f(x,y,z);
-            }
-        }
-
-        public List<vec3f> Positions = new ArrayList<>();
-        public List<Triangle> Face = new ArrayList<>();
-
-        public static OBJ_JSON loadFromJson(ResourceLocation location){
-            OBJ_JSON obj;
-            try {
-                String str = "";
-                Resource resource = Minecraft.getInstance().getResourceManager().getResource(location).get();
-                InputStreamReader isr = new InputStreamReader(resource.open(), StandardCharsets.UTF_8);
-
-                int c;
-                while((c = isr.read()) != -1){
-                    str += (char)c;
-                }
-
-                Gson gson = new Gson();
-                obj = gson.fromJson(str,new TypeToken<OBJ_JSON>(){}.getType());
-
-                for (int i = 0; i < obj.Face.size(); i++) {
-                    obj.Face.get(i).UpdateNormal(obj.Positions);
-                }
-
-                //EpicAddon.LOGGER.info(gson.toJson(obj));
-
-            }catch(IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            return obj;
-        }
-    }
 
 
 }

@@ -1,6 +1,7 @@
 package com.dfdyz.epicacg;
 
 import com.dfdyz.epicacg.command.ClientCommands;
+import com.dfdyz.epicacg.compat.controllable.ControllableCompat;
 import com.dfdyz.epicacg.config.ClientConfig;
 import com.dfdyz.epicacg.efmextra.skills.EpicACGSkillCategories;
 import com.dfdyz.epicacg.efmextra.skills.EpicACGSkillSlot;
@@ -29,7 +30,7 @@ public class EpicACG
     public static final String MODID = "epicacg";
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final String VERSION = "20.9.6.0.fix2";
+    public static final String VERSION = "20.9.6.1";
 
     public EpicACG()
     {
@@ -87,6 +88,7 @@ public class EpicACG
         MyAnimations.LoadCamAnims();
         MyModels.LoadOtherModel();
         event.enqueueWork(LoadingEvents::RegItemModelOverride);
+        ControllableCompat.load();
         //Effeks.load();
 
         try {

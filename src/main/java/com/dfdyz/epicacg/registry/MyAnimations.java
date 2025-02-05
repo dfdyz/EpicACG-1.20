@@ -566,7 +566,7 @@ public class MyAnimations {
                                 }, AnimationEvent.Side.SERVER),
                         AnimationEvent.TimeStampedEvent
                                 .create(1.5F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE
-                                        , AnimationEvent.Side.CLIENT)
+                                        , AnimationEvent.Side.SERVER)
                                 .params(new Vec3f(0.0F, -1F, 0F), Armatures.BIPED.rootJoint, 5D, 0.7F),
                         AnimationEvent.TimeStampedEvent
                                 .create(1.4F, (entitypatch, anim, objs) -> {

@@ -23,8 +23,8 @@ import static net.minecraft.client.Minecraft.ON_OSX;
 
 
 public abstract class PostParticleRenderType implements ParticleRenderType {
-    private final ResourceLocation renderTypeID;
-    private final ResourceLocation texture;
+    protected final ResourceLocation renderTypeID;
+    protected final ResourceLocation texture;
     public int priority = 0;
 
     //protected boolean started = false;

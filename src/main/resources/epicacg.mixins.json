@@ -10,8 +10,9 @@
     "MixinLevelRenderer",
     "MixinLivingEntity",
     "MixinParticleEngine",
-    "compat.MixinParticleEngineA",
-    "compat.MixinParticleEngineB"
+    "compat.oculus.MixinParticleEngineA",
+    "compat.oculus.MixinParticleEngineB",
+    "feature.feedback.MixinLevelUtils"
   ],
   "mixins": [
     "MixinMob",

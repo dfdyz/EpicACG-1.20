@@ -86,7 +86,7 @@ public class PostEffectPipelines {
         protected boolean called = false;
         protected boolean started = false;
         protected RenderTarget bufferTarget;
-        protected final ResourceLocation name;
+        public final ResourceLocation name;
 
         public int priority = 0;
 
@@ -106,8 +106,8 @@ public class PostEffectPipelines {
                 if(Active){
                     //ClientCommands.Debug();
                     bufferTarget.copyDepthFrom(getSource());
+                    bufferTarget.bindWrite(false);
                 }
-                bufferTarget.bindWrite(false);
             }
             else {
                 if(bufferTarget == null){
@@ -119,11 +119,11 @@ public class PostEffectPipelines {
                 if(Active){
                     //System.out.println("push")
                     bufferTarget.copyDepthFrom(main);
+                    PostEffectQueue.add(this);
+                    bufferTarget.bindWrite(false);
+                    started = true;
                 }
                 //System.out.println("push");
-                PostEffectQueue.add(this);
-                bufferTarget.bindWrite(false);
-                started = true;
             }
         }
 
@@ -147,7 +147,6 @@ public class PostEffectPipelines {
                 //bufferTarget.clear(Minecraft.ON_OSX);
                 getSource().bindWrite(false);
             }
-
             //ClientCommands.Debug();
         }
         public abstract void PostEffectHandler();

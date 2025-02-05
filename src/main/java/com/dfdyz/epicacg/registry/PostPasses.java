@@ -24,6 +24,7 @@ public class PostPasses {
     public static ColorDispersion color_dispersion;
     public static HsvFilter hsv_filter;
     public static BlackHole black_hole;
+    public static MaskComposite mask_composite;
 
 
     public static void register(RegisterShadersEvent event){
@@ -43,6 +44,7 @@ public class PostPasses {
             black_hole = new BlackHole("epicacg:black_hole",rm);
 
             hsv_filter = new HsvFilter("epicacg:hsv_filter", rm);
+            mask_composite = new MaskComposite("epicacg:mask_composite", rm);
 
             blur = new Blur(rm);
 

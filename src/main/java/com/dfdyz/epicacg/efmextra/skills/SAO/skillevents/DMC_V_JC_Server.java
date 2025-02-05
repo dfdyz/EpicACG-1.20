@@ -70,7 +70,7 @@ public class DMC_V_JC_Server {
                                 && entity.equals(entityPatch.getOriginal())
                                 && entity.distanceTo(entityPatch.getOriginal()) < 9
                         ) return;
-                        HurtEntity(entityPatch, entity,DMC5_V_JC, 1.5f,0.4f);
+                        HurtEntity(entityPatch, entity,DMC5_V_JC, 2f,0.25f);
                     }
             );
         }

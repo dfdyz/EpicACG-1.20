@@ -37,6 +37,7 @@ import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
+import yesman.epicfight.world.damagesource.EpicFightDamageSources;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener;
 
@@ -102,7 +103,7 @@ public class SAOSkillAnimUtils {
                     EntityMap.forEach(
                             (entity)->{
                                 if(entity != null && entity.isAlive() && entity.equals(entityPatch.getOriginal())) return;
-                                HurtEntity(entityPatch, entity, SAO_RAPIER_SA2, 1.7f,0.2f);
+                                HurtEntity(entityPatch, entity, SAO_RAPIER_SA2, 2.5f,0.15f);
                             });
                 }
             }
@@ -127,40 +128,31 @@ public class SAOSkillAnimUtils {
 
     public static void HurtEntity(LivingEntityPatch<?> attacker, Entity target, StaticAnimation animation, float damageRate, float cutRate){
         EpicFightDamageSource source = attacker.getDamageSource(animation, InteractionHand.MAIN_HAND);
+        LivingEntity rootEntity = getTrueEntity(target);
 
+        var level = attacker.getOriginal().level();
+        if(level.isClientSide) return;
+
+        var modifier = new ValueModifier(rootEntity.getMaxHealth() * 0.05f, damageRate, Float.NaN);
         if(source.getDamageModifier() == null){
-            source.setDamageModifier(new ValueModifier(0, damageRate,0));
+            source.setDamageModifier(modifier);
         }
         else {
-            source.getDamageModifier().merge(new ValueModifier(0, damageRate,0));
+            source.getDamageModifier().merge(modifier);
         }
-
-        LivingEntity rootEntity = getTrueEntity(target);
 
         int prevInvulTime = target.invulnerableTime;
         target.invulnerableTime = 0;
         AttackResult attackResult = attacker.attack(source, target, InteractionHand.MAIN_HAND);
-        target.invulnerableTime = prevInvulTime;
-
-        /*
-        if (attackResult.resultType.dealtDamage() && rootEntity != null) {
-            if (attacker instanceof ServerPlayerPatch) {
-                ServerPlayerPatch playerpatch = (ServerPlayerPatch)attacker;
-                playerpatch.getEventListener().triggerEvents(PlayerEventListener.EventType.DEALT_DAMAGE_EVENT_HURT,
-                        new DealtDamageEvent.Attack(playerpatch, rootEntity, source, new Living(
-                                rootEntity, source, attackResult.damage
-                        )));
-            }
-        }
-
-         */
 
         if(rootEntity != null){
-            float dmg = rootEntity.getMaxHealth() * 0.05f + attackResult.damage;
-            dmg += cutRate * (rootEntity.getMaxHealth() - rootEntity.getHealth());
-            target.hurt(attacker.getOriginal().level().damageSources().generic(), dmg);
+            //float dmg = rootEntity.getMaxHealth() * 0.05f;
+            float health = rootEntity.getHealth();
+            float dmg = cutRate * (rootEntity.getMaxHealth() - health);
+            target.invulnerableTime = 0;
+            target.hurt(level.damageSources().generic(), dmg);
         }
-
+        target.invulnerableTime = prevInvulTime;
     }
 
     public static LivingEntity getTrueEntity(Entity entity) {
