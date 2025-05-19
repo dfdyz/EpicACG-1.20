@@ -5,6 +5,7 @@ import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -59,7 +60,7 @@ public class SubSpaceRenderType extends PostParticleRenderType {
         return ppl;
     }
 
-    public static final PPL ppl = new PPL(new ResourceLocation(EpicACG.MODID, "sub_space"));
+    public static final PPL ppl = new PPL(OjangUtils.newRL(EpicACG.MODID, "sub_space"));
 
     public static class PPL extends PostEffectPipelines.Pipeline {
         public PPL(ResourceLocation name) {
@@ -86,7 +87,7 @@ public class SubSpaceRenderType extends PostParticleRenderType {
         }
 
         private static final ResourceLocation tmpTarget
-                = new ResourceLocation(EpicACG.MODID, "sub_space_tmp");
+                = OjangUtils.newRL(EpicACG.MODID, "sub_space_tmp");
 
         @Override
         public void start() {

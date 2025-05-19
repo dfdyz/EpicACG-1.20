@@ -10,14 +10,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
-import yesman.epicfight.api.animation.AnimationPlayer;
-import yesman.epicfight.api.animation.Joint;
-import yesman.epicfight.api.animation.JointTransform;
-import yesman.epicfight.api.animation.Pose;
+import yesman.epicfight.api.animation.*;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.HitEntityList;
@@ -32,23 +30,23 @@ import java.util.List;
 public class ScanAttackAnimation extends AttackAnimation{
     protected ScanAttackConsumer attackConsumer = (animation, entitypatch, prevElapsedTime, elapsedTime, prevState, state, phase) -> {};
 
-    public ScanAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, path, armature);
+    public ScanAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends ScanAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, accessor, armature);
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
     }
 
-    public ScanAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, preDelay, contact, recovery, hand, collider, colliderJoint, path, armature);
+    public ScanAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends ScanAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, preDelay, contact, recovery, hand, collider, colliderJoint, accessor, armature);
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
     }
 
-    public ScanAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
-        super(convertTime, path, armature, phases);
+    public ScanAttackAnimation(float convertTime, AnimationManager.AnimationAccessor<? extends ScanAttackAnimation> accessor, AssetAccessor<? extends Armature> armature, Phase... phases) {
+        super(convertTime, accessor, armature, phases);
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
     }
 
-    public ScanAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @javax.annotation.Nullable Collider collider, Joint scanner, String path, Armature model) {
-        super(convertTime, path, model,
+    public ScanAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @javax.annotation.Nullable Collider collider, Joint scanner, AnimationManager.AnimationAccessor<? extends ScanAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, accessor, armature,
                 new Phase(0.0F, antic, contact, recovery, Float.MAX_VALUE, hand, scanner, collider));
         //Hjoint = shoot;
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, true);
@@ -63,11 +61,12 @@ public class ScanAttackAnimation extends AttackAnimation{
     }
 
     @Override
-    public void end(LivingEntityPatch<?> entitypatch, DynamicAnimation nextAnimation, boolean isEnd) {
+    public void end(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> nextAnimation, boolean isEnd) {
         super.end(entitypatch, nextAnimation, isEnd);
         entitypatch.removeHurtEntities();
         getScannedEntities(entitypatch).clear();
     }
+
     @Override
     public void tick(LivingEntityPatch<?> entitypatch) {
         super.tick(entitypatch);
@@ -75,7 +74,7 @@ public class ScanAttackAnimation extends AttackAnimation{
             if(this.getProperty(MyProperties.INVISIBLE_PHASE).isPresent()){
                 if(this.getProperty(MyProperties.INVISIBLE_PHASE).get()
                         .isInPhase(entitypatch.getAnimator()
-                                .getPlayerFor(this).getElapsedTime()
+                                .getPlayerFor(getAccessor()).getElapsedTime()
                         )){
                     RenderEvents.HiddenEntity(entitypatch.getOriginal(), 10);
                 }
@@ -96,9 +95,9 @@ public class ScanAttackAnimation extends AttackAnimation{
     @Override
     public void modifyPose(DynamicAnimation animation, Pose pose, LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
             if (this.getProperty(AnimationProperty.ActionAnimationProperty.COORD).isEmpty()) {
-                JointTransform jt = pose.getOrDefaultTransform("Root");
+                JointTransform jt = pose.orElseEmpty("Root");
                 Vec3f jointPosition = jt.translation();
-                OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTrasnform().removeTranslation();
+                OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTransform().removeTranslation();
                 OpenMatrix4f toOrigin = OpenMatrix4f.invert(toRootTransformApplied, null);
                 Vec3f worldPosition = OpenMatrix4f.transform3v(toRootTransformApplied, jointPosition, null);
 
@@ -126,7 +125,7 @@ public class ScanAttackAnimation extends AttackAnimation{
     }
 
     @Override
-    protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
+    protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> dynamicAnimation) {
         //entitypatch.getOriginal().setDeltaMovement(0,0,0);
         /*
         if (!shouldMove){
@@ -134,7 +133,10 @@ public class ScanAttackAnimation extends AttackAnimation{
         }*/
         Vec3 vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
 
-        float t = entitypatch.getAnimator().getPlayerFor(dynamicAnimation).getElapsedTime();
+        var animPlayer = entitypatch.getAnimator().getPlayerFor(dynamicAnimation);
+        if(animPlayer == null) return vec3;
+
+        float t = animPlayer.getElapsedTime();
         if(this.getProperty(MyProperties.MOVE_ROOT_PHASE).isPresent() &&
                 this.getProperty(MyProperties.MOVE_ROOT_PHASE).get().isInPhase(t)){
             vec3 = vec3.multiply(0,0,0);
@@ -144,8 +146,8 @@ public class ScanAttackAnimation extends AttackAnimation{
     }
 
     @Override
-    public void attackTick(LivingEntityPatch<?> entitypatch, DynamicAnimation animation) {
-        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this);
+    public void attackTick(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> animation) {
+        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(getAccessor());
         float elapsedTime = player.getElapsedTime();
         float prevElapsedTime = player.getPrevElapsedTime();
         EntityState state = this.getState(entitypatch, elapsedTime);
@@ -169,17 +171,13 @@ public class ScanAttackAnimation extends AttackAnimation{
 
     }
 
-    public static final TypeFlexibleHashMap.TypeKey<List<Entity>> SCANNED_ENTITY = () -> Lists.newArrayList();
-
+    public static final AnimationVariables.SharedAnimationVariableKey<List<Entity>> SCANNED_ENTITY = AnimationVariables.shared((animator) -> {
+        return Lists.newArrayList();
+    }, false);
 
 
     public static List<Entity> getScannedEntities(LivingEntityPatch<?> entityPatch){
-        List<Entity> el = entityPatch.getAnimator().getAnimationVariables(SCANNED_ENTITY);
-        if(el == null){
-            el = Lists.newArrayList();
-            entityPatch.getAnimator().putAnimationVariable(SCANNED_ENTITY, el);
-        }
-        return el;
+        return entityPatch.getAnimator().getVariables().getOrDefaultSharedVariable(SCANNED_ENTITY);
     }
 
     public void ScanTarget(LivingEntityPatch<?> entitypatch, float prevElapsedTime, float elapsedTime, EntityState prevState, EntityState state, Phase phase){
@@ -202,7 +200,7 @@ public class ScanAttackAnimation extends AttackAnimation{
                 if(!e.isAlive()) continue;
 
                 LivingEntity trueEntity = this.getTrueEntity(e);
-                if (!entitypatch.isTeammate(e) && trueEntity != null) {
+                if (!entitypatch.isTargetInvulnerable(e) && trueEntity != null) {
                     if (e instanceof LivingEntity || e instanceof PartEntity) {
                         if (entity.hasLineOfSight(e) && !getScannedEntities(entitypatch).contains(e)) {
                             if(!entitypatch.getCurrenltyAttackedEntities().contains(trueEntity))

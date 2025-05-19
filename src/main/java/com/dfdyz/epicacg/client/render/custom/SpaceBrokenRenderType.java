@@ -5,6 +5,7 @@ import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -47,10 +48,10 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
     }
 
     static final PostEffectPipelines.Pipeline ppl1 =
-            new Pipeline(new ResourceLocation(EpicACG.MODID, "space_broken_0"), 10);
+            new Pipeline(OjangUtils.newRL(EpicACG.MODID, "space_broken_0"), 10);
 
     static final PostEffectPipelines.Pipeline ppl2 =
-            new Pipeline(new ResourceLocation(EpicACG.MODID, "space_broken_1"), 11);
+            new Pipeline(OjangUtils.newRL(EpicACG.MODID, "space_broken_1"), 11);
 
     public static class Pipeline extends PostEffectPipelines.Pipeline{
         public Pipeline(ResourceLocation name, int priority) {
@@ -58,8 +59,8 @@ public class SpaceBrokenRenderType extends PostParticleRenderType {
             this.priority = priority;
         }
 
-        //private ResourceLocation space_broken_mask = new ResourceLocation(EpicACG.MODID, "space_broken_mask_" + priority);
-        private static final ResourceLocation tmpTarget = new ResourceLocation(EpicACG.MODID, "space_broken_tmp");
+        //private ResourceLocation space_broken_mask = OjangUtils.newRL(EpicACG.MODID, "space_broken_mask_" + priority);
+        private static final ResourceLocation tmpTarget = OjangUtils.newRL(EpicACG.MODID, "space_broken_tmp");
 
         @Override
         public void start() {

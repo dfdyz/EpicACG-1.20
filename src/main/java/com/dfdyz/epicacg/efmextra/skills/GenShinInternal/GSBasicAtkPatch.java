@@ -16,6 +16,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.skill.*;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -31,20 +32,20 @@ public class GSBasicAtkPatch extends Skill {
 
     private static final UUID EVENT_UUID = UUID.fromString("10f7b428-63f8-4867-2615-9bf8edbecd97");;
 
-    public GSBasicAtkPatch(Builder<? extends Skill> builder) {
+    public GSBasicAtkPatch(SkillBuilder<? extends Skill> builder) {
         super(builder);
     }
     public void onInitiate(SkillContainer container) {
         SkillUtils.InitBasicAttack(container);
-        container.getExecuter().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-            if (!event.getAnimation().isBasicAttackAnimation()) {
+        container.getExecutor().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
+            if (!event.getAnimation().get().isBasicAttackAnimation()) {
                 container.getDataManager().setData(BA_COMBO_COUNTER.get(), 0);
             }
         });
     }
 
     public void onRemoved(SkillContainer container) {
-        container.getExecuter().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
+        container.getExecutor().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
     }
 
     public boolean isExecutableState(PlayerPatch<?> executer) {
@@ -53,16 +54,18 @@ public class GSBasicAtkPatch extends Skill {
         return !player.isSpectator() && playerState.canBasicAttack();
     }
 
-    public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
+    @Override
+    public void executeOnServer(SkillContainer container, FriendlyByteBuf args) {
+        var executer = container.getServerExecutor();
         if (!executer.getEventListener().triggerEvents(PlayerEventListener.EventType.BASIC_ATTACK_EVENT, new BasicAttackEvent(executer))) {
 
             if(MySkills.GS_Bow_FallAttackPatch.isExecutableState(executer)){
-                MySkills.GS_Bow_FallAttackPatch.executeOnServer(executer, args);
+                MySkills.GS_Bow_FallAttackPatch.executeOnServer(container, args);
                 return;
             }
 
             CapabilityItem cap = executer.getHoldingItemCapability(InteractionHand.MAIN_HAND);
-            StaticAnimation attackMotion = null;
+            AssetAccessor<? extends StaticAnimation> attackMotion = null;
             ServerPlayer player = executer.getOriginal();
             SkillDataManager dataManager = executer.getSkill(SkillSlots.BASIC_ATTACK).getDataManager();
             int comboCounter = dataManager.getDataValue(BA_COMBO_COUNTER.get());
@@ -70,11 +73,11 @@ public class GSBasicAtkPatch extends Skill {
                 Entity entity = player.getVehicle();
                 if (entity instanceof PlayerRideableJumping && ((PlayerRideableJumping)entity).canJump() && cap.availableOnHorse() && cap.getMountAttackMotion() != null) {
                     comboCounter %= cap.getMountAttackMotion().size();
-                    attackMotion = cap.getMountAttackMotion().get(comboCounter).get();
+                    attackMotion = cap.getMountAttackMotion().get(comboCounter);
                     ++comboCounter;
                 }
             } else {
-                var combo = cap.getAutoAttckMotion(executer);
+                var combo = cap.getAutoAttackMotion(executer);
                 int comboSize = combo.size();
                 boolean dashAttack = player.isSprinting();
                 boolean fallAttack = player.getDeltaMovement().y <= -0.3D;
@@ -98,7 +101,7 @@ public class GSBasicAtkPatch extends Skill {
                     comboCounter %= comboSize - 2;
                 }
 
-                attackMotion = combo.get(comboCounter).get();
+                attackMotion = combo.get(comboCounter);
                 comboCounter = (dashAttack || fallAttack) ? 0 : comboCounter + 1;
             }
 
@@ -111,8 +114,9 @@ public class GSBasicAtkPatch extends Skill {
         }
     }
 
+
     public void updateContainer(SkillContainer container) {
-        if (container.getExecuter().getTickSinceLastAction() > 50 && container.getDataManager().getDataValue(BA_COMBO_COUNTER.get()) > 0) {
+        if (container.getExecutor().getTickSinceLastAction() > 50 && container.getDataManager().getDataValue(BA_COMBO_COUNTER.get()) > 0) {
             container.getDataManager().setData(BA_COMBO_COUNTER.get(), 0);
         }
     }

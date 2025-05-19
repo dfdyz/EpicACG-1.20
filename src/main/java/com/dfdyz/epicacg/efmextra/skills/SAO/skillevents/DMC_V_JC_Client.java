@@ -45,6 +45,7 @@ public class DMC_V_JC_Client {
         );
         particle.setLifetime(30);
         RenderUtils.AddParticle(Minecraft.getInstance().level, particle);
+
     }
     //public static OpenMatrix4f matrix4f = new OpenMatrix4f();
     public static void post1(LivingEntityPatch<?> entityPatch){
@@ -55,6 +56,7 @@ public class DMC_V_JC_Client {
         ColorDispersionEffect effect = new ColorDispersionEffect(pos);
         effect.lifetime = 58;
         ScreenEffectEngine.PushScreenEffect(effect);
+
     }
 
     public static void post2(LivingEntityPatch<?> entityPatch){
@@ -68,8 +70,14 @@ public class DMC_V_JC_Client {
         Vec3 pos = entityPatch.getOriginal().position();
         RenderUtils.AddParticle((ClientLevel) worldIn, new SpaceBrokenParticle((ClientLevel) worldIn, pos.x, pos.y, pos.z, entityPatch.getOriginal().yBodyRot, 45, 0));
         RenderUtils.AddParticle((ClientLevel) worldIn, new SpaceBrokenParticle((ClientLevel) worldIn, pos.x, pos.y, pos.z, entityPatch.getOriginal().yBodyRot,45, 1));
+        if (entityPatch.getOriginal() instanceof Player) {
+            (entityPatch.getOriginal()).getMainHandItem().getOrCreateTag().putBoolean("unsheathed", true);
+        }
     }
 
     public static void postAttack(LivingEntityPatch<?> entityPatch){
+        if (entityPatch.getOriginal() instanceof Player) {
+            (entityPatch.getOriginal()).getMainHandItem().getOrCreateTag().putBoolean("unsheathed", false);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.dfdyz.epicacg.efmextra.skills.GenShinInternal;
 
+import com.dfdyz.epicacg.registry.MyAnimations;
 import com.dfdyz.epicacg.registry.MySkillDataKeys;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
@@ -12,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.Skill;
+import yesman.epicfight.skill.SkillBuilder;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -26,10 +28,10 @@ public class GSFallAttack extends Skill {
     private static final UUID EVENT_UUID = UUID.fromString("2797461e-2bcc-7015-bf07-390a557fed81");
 /*
     public Builder<GSFallAttack> GetBuilder(String registryName){
-        return new Builder<GSFallAttack>(new ResourceLocation(EpicAddon.MODID, registryName)).setCategory(SkillCategories.AIR_ATTACK);
+        return new Builder<GSFallAttack>(OjangUtils.newRL(EpicAddon.MODID, registryName)).setCategory(SkillCategories.AIR_ATTACK);
     }
  */
-    public GSFallAttack(Builder<? extends Skill> builder) {
+    public GSFallAttack(SkillBuilder<? extends Skill> builder) {
         super(builder);
     }
 
@@ -47,14 +49,14 @@ public class GSFallAttack extends Skill {
         return !(player.isPassenger() || player.isSpectator() || !playerState.canBasicAttack()) && fallAttack;
     }
 
-    @Override
-    public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-        var motions = executer.getHoldingItemCapability(InteractionHand.MAIN_HAND).getAutoAttckMotion(executer);
-        StaticAnimation attackMotion = motions.get(motions.size() - 1).get();
 
-        if (attackMotion != null) {
-            super.executeOnServer(executer, args);
-            executer.playAnimationSynchronized(attackMotion, 0);
+    @Override
+    public void executeOnServer(SkillContainer container, FriendlyByteBuf args) {
+        var executer = container.getServerExecutor();
+        var motion = MyAnimations.GS_Yoimiya_FallAtk_Start;
+        if (motion != null) {
+            super.executeOnServer(container, args);
+            executer.playAnimationSynchronized(motion, 0);
         }
     }
 
@@ -62,13 +64,13 @@ public class GSFallAttack extends Skill {
     @Override
     public void onInitiate(SkillContainer container) {
         super.onInitiate(container);
-        container.getExecuter().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER,EVENT_UUID,(event) -> {
+        container.getExecutor().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER,EVENT_UUID,(event) -> {
         });
     }
 
     @Override
     public void onRemoved(SkillContainer container) {
         super.onRemoved(container);
-        container.getExecuter().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
+        container.getExecutor().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
     }
 }

@@ -6,9 +6,12 @@ import com.dfdyz.epicacg.registry.MobEffects;
 import com.dfdyz.epicacg.registry.Sounds;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 import java.util.List;
@@ -24,9 +27,8 @@ public class DMC_V_JC_Server {
         //System.out.println("AAAAA");
         if(entityPatch instanceof ServerPlayerPatch pp){
             SkillContainer sc = pp.getSkill(SkillSlots.WEAPON_INNATE);
-            if(sc.getDataManager().hasData(JCE_Invincible.get())){
-                sc.getDataManager().setData(JCE_Invincible.get(), true);
-            }
+            sc.getDataManager().registerData(JCE_Invincible.get());
+            sc.getDataManager().setData(JCE_Invincible.get(), true);
         }
     }
 
@@ -77,9 +79,8 @@ public class DMC_V_JC_Server {
 
         if(entityPatch instanceof ServerPlayerPatch pp){
             SkillContainer sc = pp.getSkill(SkillSlots.WEAPON_INNATE);
-            if(sc.getDataManager().hasData(JCE_Invincible.get())){
-                sc.getDataManager().setData(JCE_Invincible.get(), false);
-            }
+            sc.getDataManager().registerData(JCE_Invincible.get());
+            sc.getDataManager().setData(JCE_Invincible.get(), false);
         }
     }
 }

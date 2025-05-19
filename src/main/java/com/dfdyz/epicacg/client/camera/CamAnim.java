@@ -28,7 +28,7 @@ public class CamAnim {
     }
 
     public CamAnim(float linkTime, String namespace, String path){
-        this.resourceLocation = new ResourceLocation(namespace,path);
+        this.resourceLocation = OjangUtils.newRL(namespace,path);
         this.linkTime = linkTime;
     }
 

@@ -5,7 +5,6 @@
   "package": "com.dfdyz.epicacg.mixins",
   "plugin": "com.dfdyz.epicacg.mixinloader.CompatMixinPlugin",
   "client": [
-    "MeshAccessor",
     "MixinGameRenderer",
     "MixinLevelRenderer",
     "MixinLivingEntity",

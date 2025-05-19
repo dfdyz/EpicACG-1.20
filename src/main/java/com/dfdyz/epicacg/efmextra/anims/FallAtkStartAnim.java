@@ -6,12 +6,14 @@ import com.dfdyz.epicacg.registry.MySkills;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.animation.Layer;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.model.Armature;
@@ -24,8 +26,8 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 public class FallAtkStartAnim extends ActionAnimation {
-    public StaticAnimation Loop;
-    public FallAtkStartAnim(float convertTime, String path, Armature model, StaticAnimation Loop){
+    public AnimationManager.AnimationAccessor<? extends StaticAnimation> Loop;
+    public FallAtkStartAnim(float convertTime, AnimationManager.AnimationAccessor<? extends FallAtkStartAnim> path, AssetAccessor<? extends Armature>  model, AnimationManager.AnimationAccessor<? extends StaticAnimation> Loop){
         super(convertTime, path, model);
         this.Loop = Loop;
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
@@ -65,9 +67,9 @@ public class FallAtkStartAnim extends ActionAnimation {
 
     @Override
     public void modifyPose(DynamicAnimation animation, Pose pose, LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-        JointTransform jt = pose.getOrDefaultTransform("Root");
+        JointTransform jt = pose.orElseEmpty("Root");
         Vec3f jointPosition = jt.translation();
-        OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTrasnform().removeTranslation();
+        OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTransform().removeTranslation();
         OpenMatrix4f toOrigin = OpenMatrix4f.invert(toRootTransformApplied, null);
         Vec3f worldPosition = OpenMatrix4f.transform3v(toRootTransformApplied, jointPosition, null);
         worldPosition.x = 0.0F;
@@ -79,8 +81,9 @@ public class FallAtkStartAnim extends ActionAnimation {
         jointPosition.z = worldPosition.z;
     }
 
+
     @Override
-    public void end(LivingEntityPatch<?> entitypatch, DynamicAnimation nextAnimation, boolean isEnd) {
+    public void end(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> nextAnimation, boolean isEnd) {
         super.end(entitypatch, nextAnimation, isEnd);
         entitypatch.getOriginal().setNoGravity(false);
         if (!entitypatch.isLogicalClient()){
@@ -110,8 +113,4 @@ public class FallAtkStartAnim extends ActionAnimation {
         return true;
     }
 
-    @Override
-    public void linkTick(LivingEntityPatch<?> entitypatch, DynamicAnimation linkAnimation) {
-        super.linkTick(entitypatch, linkAnimation);
-    }
 }

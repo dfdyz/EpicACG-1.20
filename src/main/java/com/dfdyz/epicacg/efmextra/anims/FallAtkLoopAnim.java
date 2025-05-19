@@ -10,13 +10,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty;
-import yesman.epicfight.api.animation.types.ActionAnimation;
-import yesman.epicfight.api.animation.types.DynamicAnimation;
-import yesman.epicfight.api.animation.types.LinkAnimation;
-import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.animation.types.*;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.animation.Layer;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.client.animation.property.JointMask;
@@ -26,10 +25,10 @@ import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 public class FallAtkLoopAnim extends ActionAnimation {
-    private StaticAnimation atk;
+    private AnimationManager.AnimationAccessor<? extends StaticAnimation> atk;
     //private final float fallSpeed;
-    public FallAtkLoopAnim(float convertTime, String path, Armature model, StaticAnimation atk){
-        super(convertTime ,path,model);
+    public FallAtkLoopAnim(float convertTime, AnimationManager.AnimationAccessor<? extends FallAtkLoopAnim> accessor, AssetAccessor<? extends Armature> armature, AnimationManager.AnimationAccessor<? extends StaticAnimation> atk){
+        super(convertTime ,accessor,armature);
         this.atk = atk;
         this.addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
 
@@ -60,7 +59,7 @@ public class FallAtkLoopAnim extends ActionAnimation {
     }
 
     @Override
-    public void end(LivingEntityPatch<?> entitypatch,  DynamicAnimation nextAnimation, boolean isEnd) {
+    public void end(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> nextAnimation, boolean isEnd) {
         super.end(entitypatch, nextAnimation, isEnd);
         entitypatch.getOriginal().setDeltaMovement(0,-2,0);
     }
@@ -117,11 +116,6 @@ public class FallAtkLoopAnim extends ActionAnimation {
     @Override
     public float getTotalTime() {
         return Float.MAX_VALUE;
-    }
-    @Override
-    public void linkTick(LivingEntityPatch<?> entitypatch, DynamicAnimation linkAnimation) {
-        super.linkTick(entitypatch, linkAnimation);
-        
     }
 
 }

@@ -2,22 +2,18 @@ package com.dfdyz.epicacg.efmextra.skills.SAO;
 
 import com.dfdyz.epicacg.efmextra.skills.EpicACGSkillSlot;
 import com.dfdyz.epicacg.efmextra.skills.IMutiSpecialSkill;
-import com.dfdyz.epicacg.efmextra.skills.MultiSpecialSkill;
 import com.dfdyz.epicacg.efmextra.skills.SimpleWeaponSASkill;
 import com.dfdyz.epicacg.registry.MyAnimations;
 import com.dfdyz.epicacg.registry.MySkills;
-import com.dfdyz.epicacg.utils.SkillUtils;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import yesman.epicfight.api.animation.AnimationProvider;
-import yesman.epicfight.api.animation.AttackAnimationProvider;
-import yesman.epicfight.api.animation.types.AttackAnimation;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.*;
 import yesman.epicfight.skill.weaponinnate.SimpleWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 import java.util.ArrayList;
 
@@ -26,34 +22,36 @@ import static com.dfdyz.epicacg.registry.MySkillDataKeys.CHILD_SKILL_INDEX;
 public class RapierSpicialAttackSkill extends SimpleWeaponSASkill implements IMutiSpecialSkill {
     private final ArrayList<ResourceLocation> childSkills = new ArrayList<>();
     private final ArrayList<ResourceLocation> childSkills2 = new ArrayList<>();
-    private final AttackAnimationProvider Normal;
-    private final AttackAnimationProvider OnRun;
+    private final AnimationManager.AnimationAccessor<? extends StaticAnimation> Normal;
+    private final AnimationManager.AnimationAccessor<? extends StaticAnimation> OnRun;
 
-    public RapierSpicialAttackSkill(Builder builder) {
+    public RapierSpicialAttackSkill(_Builder builder) {
         super(builder);
-        this.Normal = () -> (AttackAnimation) MyAnimations.SAO_RAPIER_SA2;
-        this.OnRun = () -> (AttackAnimation) MyAnimations.SAO_RAPIER_SPECIAL_DASH;
+        this.Normal = MyAnimations.SAO_RAPIER_SA2;
+        this.OnRun = MyAnimations.SAO_RAPIER_SPECIAL_DASH;
         ResourceLocation name = this.getRegistryName();
-        //ResourceLocation tex = new ResourceLocation(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png");
-        childSkills.add(new ResourceLocation(name.getNamespace(), "textures/gui/skills/sao_rapier_skill.png"));
-        childSkills.add(new ResourceLocation(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png"));
-        childSkills2.add(new ResourceLocation(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png"));
+        //ResourceLocation tex = OjangUtils.newRL(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png");
+        childSkills.add(OjangUtils.newRL(name.getNamespace(), "textures/gui/skills/sao_rapier_skill.png"));
+        childSkills.add(OjangUtils.newRL(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png"));
+        childSkills2.add(OjangUtils.newRL(name.getNamespace(), "textures/gui/skills/" + name.getPath() + ".png"));
     }
 
-    public static Builder createBuilder(ResourceLocation resourceLocation) {
-        return (new Builder(resourceLocation)).setCategory(SkillSlots.WEAPON_INNATE.category()).setResource(Resource.STAMINA);
+    public static _Builder create_Builder(ResourceLocation resourceLocation) {
+        return (new _Builder(resourceLocation)).setCategory(SkillSlots.WEAPON_INNATE.category()).setResource(Resource.STAMINA);
     }
 
     @Override
     public void onInitiate(SkillContainer container) {
         super.onInitiate(container);
-        container.getExecuter().getSkillCapability()
+        container.getExecutor().getSkillCapability()
                 .skillContainers[EpicACGSkillSlot.SKILL_SELECTOR.universalOrdinal()]
                 .setSkill(MySkills.MUTI_SPECIAL_ATTACK);
     }
 
+
     @Override
-    public boolean checkExecuteCondition(PlayerPatch<?> executer) {
+    public boolean checkExecuteCondition(SkillContainer container) {
+        var executer = container.getExecutor();
         boolean ok = false;
         SkillContainer skillContainer = executer.getSkill(SkillSlots.WEAPON_INNATE);
         int selected = executer.getSkill(EpicACGSkillSlot.SKILL_SELECTOR).getDataManager().getDataValue(CHILD_SKILL_INDEX.get());
@@ -73,27 +71,33 @@ public class RapierSpicialAttackSkill extends SimpleWeaponSASkill implements IMu
         return this;
     }
 
+    @Override
+    public boolean canExecute(SkillContainer container) {
+        return super.canExecute(container);
+    }
+
 
     @Override
-    public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
+    public void executeOnServer(SkillContainer container, FriendlyByteBuf args) {
+        var executer = container.getServerExecutor();
         SkillContainer skill = executer.getSkill(SkillSlots.WEAPON_INNATE);
         int selected = executer.getSkill(EpicACGSkillSlot.SKILL_SELECTOR).getDataManager().getDataValue(CHILD_SKILL_INDEX.get());
 
         if (executer.getOriginal().isSprinting()){
-            executer.playAnimationSynchronized(this.OnRun.get(), 0.0F);
-            this.setStackSynchronize(executer, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 1);
+            executer.playAnimationSynchronized(this.OnRun, 0.0F);
+            this.setStackSynchronize(container, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 1);
         }
         else {
             if(selected == 0){
-                executer.playAnimationSynchronized(this.Normal.get(), 0.0F);
-                this.setStackSynchronize(executer, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 2);
+                executer.playAnimationSynchronized(this.Normal, 0.0F);
+                this.setStackSynchronize(container, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 2);
             }
             else {
-                executer.playAnimationSynchronized(this.OnRun.get(), 0.0F);
-                this.setStackSynchronize(executer, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 1);
+                executer.playAnimationSynchronized(this.OnRun, 0.0F);
+                this.setStackSynchronize(container, executer.getSkill(SkillSlots.WEAPON_INNATE).getStack() - 1);
             }
         }
-        this.setDurationSynchronize(executer, this.maxDuration);
+        this.setDurationSynchronize(container, this.maxDuration);
         skill.activate();
     }
 
@@ -120,38 +124,11 @@ public class RapierSpicialAttackSkill extends SimpleWeaponSASkill implements IMu
     }
 
 
-    public static class Builder extends SimpleWeaponInnateSkill.Builder {
-        protected StaticAnimation attackAnimation;
-        protected StaticAnimation attackAnimation2;
-
-        public Builder(ResourceLocation resourceLocation) {
+    public static class _Builder extends SimpleWeaponInnateSkill.Builder {
+        public _Builder(ResourceLocation resourceLocation) {
             super();
             this.registryName = resourceLocation;
             //this.maxStack = 3;
-        }
-
-        public Builder setCategory(SkillCategory category) {
-            this.category = category;
-            return this;
-        }
-
-        public Builder setMaxDuration(int maxDuration) {
-            //this.maxDuration = maxDuration;
-            return this;
-        }
-
-        public Builder setActivateType(ActivateType activateType) {
-            this.activateType = activateType;
-            return this;
-        }
-        public Builder setResource(Resource resource) {
-            this.resource = resource;
-            return this;
-        }
-
-        public Builder setAnimation(AttackAnimationProvider attackAnimation) {
-            super.setAnimations(attackAnimation);
-            return this;
         }
     }
 }

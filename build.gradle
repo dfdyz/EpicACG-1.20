@@ -161,7 +161,10 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    implementation fg.deobf("libs:epicfight:20.9.6")
+    implementation fg.deobf("libs:epicfight:20.10.3")
+
+    // compat
+    // compileOnly fg.deobf("curse.maven:yamato-1151542:6192050")
 
     implementation fg.deobf("curse.maven:embeddium-908741:5556138")
     implementation fg.deobf("curse.maven:oculus-581495:5299671")

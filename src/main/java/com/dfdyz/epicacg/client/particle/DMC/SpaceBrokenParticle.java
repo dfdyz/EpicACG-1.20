@@ -64,7 +64,7 @@ public class SpaceBrokenParticle extends Particle {
         float v1 = 1;
         int light = RenderUtils.EmissiveLightPos;
 
-        float sss = layer == 0 ? 1.2f : 1.3f;
+        float sss = layer == 0 ? 1.3f : 1.4f;
 
         Vector3f camNormal = new Vector3f(camera.getLookVector());
         camNormal.normalize();

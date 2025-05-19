@@ -5,6 +5,7 @@ import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -26,7 +27,7 @@ public class BlockHoleRenderType extends PostParticleRenderType {
         return ppl;
     }
 
-    static final PPL ppl = new PPL(new ResourceLocation(EpicACG.MODID, "black_hole"));
+    static final PPL ppl = new PPL(OjangUtils.newRL(EpicACG.MODID, "black_hole"));
 
     public static class PPL extends PostEffectPipelines.Pipeline {
         public PPL(ResourceLocation name) {
@@ -76,7 +77,7 @@ public class BlockHoleRenderType extends PostParticleRenderType {
         }
 
         private static final ResourceLocation tmpTarget
-                = new ResourceLocation(EpicACG.MODID, "black_hole_tmp");
+                = OjangUtils.newRL(EpicACG.MODID, "black_hole_tmp");
 
         @Override
         public void PostEffectHandler() {

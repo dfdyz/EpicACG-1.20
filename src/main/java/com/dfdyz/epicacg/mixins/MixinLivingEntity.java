@@ -2,15 +2,17 @@ package com.dfdyz.epicacg.mixins;
 
 import com.dfdyz.epicacg.config.ClientConfig;
 import com.dfdyz.epicacg.utils.GlobalVal;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.dfdyz.epicacg.event.WorldEvent.ShootDeathParticle;
+
 @Mixin(value = LivingEntity.class)
 public abstract class MixinLivingEntity {
-
     // fuck Mojang
     /*
     @Inject(at = @At("HEAD"),method = "makePoofParticles", cancellable = true)
@@ -25,6 +27,7 @@ public abstract class MixinLivingEntity {
     private void MixinPoof(byte type, CallbackInfo callbackInfo){
         if(ClientConfig.cfg.EnableDeathParticle && type == 60){
             //System.out.println("fuck mojang");
+            ShootDeathParticle((LivingEntity) ((Object)this));
             callbackInfo.cancel();
         }
     }

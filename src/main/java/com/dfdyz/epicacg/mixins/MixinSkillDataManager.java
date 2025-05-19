@@ -11,7 +11,6 @@ import yesman.epicfight.skill.SkillDataManager;
 
 @Mixin(value = SkillDataManager.class, remap = false)
 public abstract class MixinSkillDataManager {
-
     @Shadow
     public abstract boolean hasData(SkillDataKey<?> key);
 
@@ -19,6 +18,4 @@ public abstract class MixinSkillDataManager {
     public void registerDataPatch(SkillDataKey<?> key, CallbackInfo ci){
         if(hasData(key)) ci.cancel();
     }
-
-
 }

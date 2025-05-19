@@ -4,6 +4,7 @@ import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.pipeline.PostEffectPipelines;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ public class ColorDispersionEffect extends ScreenEffectBase {
         this.ppl = new CD_Pipeline(this);
         this.lifetime = 40;
     }
-    static ResourceLocation color_dispersion = new ResourceLocation(EpicACG.MODID, "color_dispersion");
+    static ResourceLocation color_dispersion = OjangUtils.newRL(EpicACG.MODID, "color_dispersion");
     public final SE_Pipeline ppl;
 
     public static class CD_Pipeline extends SE_Pipeline<ColorDispersionEffect>{
@@ -30,7 +31,7 @@ public class ColorDispersionEffect extends ScreenEffectBase {
             super(color_dispersion, effect);
             priority = 100;
         }
-        static ResourceLocation color_dispersion_tmp = new ResourceLocation(EpicACG.MODID, "color_dispersion_tmp");
+        static ResourceLocation color_dispersion_tmp = OjangUtils.newRL(EpicACG.MODID, "color_dispersion_tmp");
         @Override
         public void PostEffectHandler() {
             //System.out.println("handle");

@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -21,9 +22,11 @@ public class GSSpecialAttack extends SimpleWeaponSASkill {
         return this;
     }
 
+
     @Override
-    public boolean checkExecuteCondition(PlayerPatch<?> executor) {
-        return (executor.getSkill(SkillSlots.WEAPON_INNATE).isFull() || (executor.getOriginal()).isCreative())
+    public boolean checkExecuteCondition(SkillContainer container) {
+        var executor = container.getExecutor();
+        return ((executor.getOriginal()).isCreative())
                 && Math.abs(executor.getOriginal().getDeltaMovement().y) <= 0.3f
                 && closedGround(executor);
     }

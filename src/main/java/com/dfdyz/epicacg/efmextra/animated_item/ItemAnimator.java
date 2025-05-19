@@ -8,6 +8,7 @@ import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.LayerOffAnimation;
 import yesman.epicfight.api.animation.types.LinkAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.client.animation.ClientAnimator;
 import yesman.epicfight.api.client.animation.Layer;
 import yesman.epicfight.api.model.Armature;
@@ -32,7 +33,8 @@ public class ItemAnimator implements IItemAnimator {
         default_animation = defaultAnimation;
     }
 
-    protected DynamicAnimation getAnimation(DynamicAnimation animation){
+    protected DynamicAnimation getAnimation(AssetAccessor<? extends DynamicAnimation> _animation){
+        var animation = _animation.get();
         if(animation.getProperty(ITEM_ANIMATION).isPresent()){
             var a = animation.getProperty(ITEM_ANIMATION).get().get();
             if (a.getArmature() == armature){

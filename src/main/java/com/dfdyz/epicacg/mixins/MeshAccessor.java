@@ -3,13 +3,13 @@ package com.dfdyz.epicacg.mixins;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import yesman.epicfight.api.client.model.Mesh;
-import yesman.epicfight.api.client.model.ModelPart;
 
-import java.util.Map;
 
-@Mixin(value = Mesh.class, remap = false)
+
+//@Mixin(value = Mesh.class, remap = false)
 public interface MeshAccessor {
 
+    /*
     @Accessor("positions")
     float[] getPositions();
 
@@ -20,5 +20,5 @@ public interface MeshAccessor {
     float[] getNormals();
 
     @Accessor("parts")
-    Map<String, ModelPart<?>> getParts();
+    Map<String, ModelPart<?>> getParts();*/
 }

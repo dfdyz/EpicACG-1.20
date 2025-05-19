@@ -3,6 +3,7 @@ package com.dfdyz.epicacg.client.screeneffect;
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -38,7 +39,7 @@ public class HsvFilterEffect extends ScreenEffectBase {
     }
 
 
-    static ResourceLocation hsv_filter = new ResourceLocation(EpicACG.MODID, "hsv_filter");
+    static ResourceLocation hsv_filter = OjangUtils.newRL(EpicACG.MODID, "hsv_filter");
     public final SE_Pipeline ppl;
 
     @Override
@@ -53,7 +54,7 @@ public class HsvFilterEffect extends ScreenEffectBase {
             super(hsv_filter, effect);
             priority = 101;
         }
-        static ResourceLocation hsv_filter_tmp = new ResourceLocation(EpicACG.MODID, "hsv_filter_tmp");
+        static ResourceLocation hsv_filter_tmp = OjangUtils.newRL(EpicACG.MODID, "hsv_filter_tmp");
         @Override
         public void PostEffectHandler() {
             RenderTarget tmp = TargetManager.getTarget(hsv_filter_tmp);

@@ -1,6 +1,7 @@
 package com.dfdyz.epicacg.registry;
 
 import com.dfdyz.epicacg.EpicACG;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +27,7 @@ public class Tab {
                             })
                     .withTabsBefore(EpicFightCreativeTabs.TABS.getRegistryName())
                     .withBackgroundLocation(
-                            new ResourceLocation("epicfight", "textures/gui/container/epicfight_creative_tab.png")
+                            OjangUtils.newRL("epicfight", "textures/gui/container/epicfight_creative_tab.png")
                     ).hideTitle().displayItems(
                             (params, output) -> {
                                 Items.REGISTRY_OBJECTS.forEach((item) -> {

@@ -169,7 +169,7 @@ public class YoimiyaSkillFunction {
 
     public static void YoimiyaSA(LivingEntityPatch<?> entitypatch){
         Level worldIn = entitypatch.getOriginal().level();
-        Vec3 handPos = getJointWorldPos(entitypatch, Armatures.BIPED.toolL);
+        Vec3 handPos = getJointWorldPos(entitypatch, Armatures.BIPED.get().toolL);
 
         float ang = (float) ((entitypatch.getOriginal().getViewYRot(1)+90)/180 * Math.PI);
         Vec3 shootVec = new Vec3(Math.cos(ang), -1.2, Math.sin(ang));

@@ -117,15 +117,14 @@ public class GenShinArrow extends Arrow {
                     ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
-                EntityPatch entityPatch = (EntityPatch) (entity1.getCapability(EpicFightCapabilities.CAPABILITY_ENTITY).orElse(null));
+                EntityPatch entityPatch = entity1.getCapability(EpicFightCapabilities.CAPABILITY_ENTITY).orElse(null);
                 if(entityPatch instanceof ServerPlayerPatch){
                     ServerPlayerPatch playerPatch = (ServerPlayerPatch) entityPatch;
                     SkillContainer skill = playerPatch.getSkill(SkillSlots.WEAPON_INNATE);
                     //System.out.println("233333");
                     if(skill != null){
                         //System.out.println(skill.getResource());
-
-                        skill.getSkill().setConsumptionSynchronize(playerPatch, skill.getResource()+3);
+                        skill.getSkill().setConsumptionSynchronize(skill, skill.getResource()+3);
                         //skill.update();
                     }
                 }

@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.player.Player;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.skill.*;
@@ -27,21 +28,21 @@ import static com.dfdyz.epicacg.registry.MySkillDataKeys.DASH_LOCKED;
 public class SAOBasicAtkPatch  extends BasicAttack {
     private static final UUID EVENT_UUID = UUID.fromString("f34b839d-ab91-ac46-b61d-1c681c904319");
 
-    public SAOBasicAtkPatch(Skill.Builder<? extends Skill> builder) {
+    public SAOBasicAtkPatch(SkillBuilder<? extends BasicAttack> builder) {
         super(builder);
     }
 
     public void onInitiate(SkillContainer container) {
         SkillUtils.InitBasicAttack(container);
-        container.getExecuter().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-            if (!event.getAnimation().isBasicAttackAnimation()) {
+        container.getExecutor().getEventListener().addEventListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
+            if (!event.getAnimation().get().isBasicAttackAnimation()) {
                 container.getDataManager().setData(BA_COMBO_COUNTER.get(), 0);
             }
         });
     }
 
     public void onRemoved(SkillContainer container) {
-        container.getExecuter().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
+        container.getExecutor().getEventListener().removeListener(PlayerEventListener.EventType.ACTION_EVENT_SERVER, EVENT_UUID);
     }
 
     public boolean isExecutableState(PlayerPatch<?> executer) {
@@ -54,7 +55,7 @@ public class SAOBasicAtkPatch  extends BasicAttack {
         if (!executer.getEventListener().triggerEvents(PlayerEventListener.EventType.BASIC_ATTACK_EVENT, new BasicAttackEvent(executer))) {
             //System.out.println("BA");
             CapabilityItem cap = executer.getHoldingItemCapability(InteractionHand.MAIN_HAND);
-            StaticAnimation attackMotion = null;
+            AnimationManager.AnimationAccessor<? extends StaticAnimation> attackMotion = null;
             ServerPlayer player = executer.getOriginal();
             SkillDataManager dataManager = executer.getSkill(SkillSlots.BASIC_ATTACK).getDataManager();
             int comboCounter = dataManager.getDataValue(BA_COMBO_COUNTER.get());
@@ -62,11 +63,11 @@ public class SAOBasicAtkPatch  extends BasicAttack {
                 Entity entity = player.getVehicle();
                 if (entity instanceof PlayerRideableJumping && ((PlayerRideableJumping)entity).canJump() && cap.availableOnHorse() && cap.getMountAttackMotion() != null) {
                     comboCounter %= cap.getMountAttackMotion().size();
-                    attackMotion = cap.getMountAttackMotion().get(comboCounter).get();
+                    attackMotion = cap.getMountAttackMotion().get(comboCounter);
                     ++comboCounter;
                 }
             } else {
-                var combo = cap.getAutoAttckMotion(executer);
+                var combo = cap.getAutoAttackMotion(executer);
                 int comboSize = combo.size();
                 boolean dashAttack = player.isSprinting();
 
@@ -84,7 +85,7 @@ public class SAOBasicAtkPatch  extends BasicAttack {
                     comboCounter %= comboSize - 3;
                 }
 
-                attackMotion = combo.get(comboCounter).get();
+                attackMotion = combo.get(comboCounter);
                 comboCounter = dashAttack ? 0 : comboCounter + 1;
             }
 
@@ -98,7 +99,7 @@ public class SAOBasicAtkPatch  extends BasicAttack {
     }
 
     public void updateContainer(SkillContainer container) {
-        if (container.getExecuter().getTickSinceLastAction() > 50 && container.getDataManager().getDataValue(BA_COMBO_COUNTER.get()) > 0) {
+        if (container.getExecutor().getTickSinceLastAction() > 50 && container.getDataManager().getDataValue(BA_COMBO_COUNTER.get()) > 0) {
             container.getDataManager().setData(BA_COMBO_COUNTER.get(), 0);
         }
     }

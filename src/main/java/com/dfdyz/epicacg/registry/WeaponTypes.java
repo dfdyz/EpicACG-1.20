@@ -4,6 +4,7 @@ import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.efmextra.skills.EpicACGSkillSlot;
 import com.dfdyz.epicacg.efmextra.weapon.GenShinBow;
 import com.dfdyz.epicacg.efmextra.weapon.WeaponCollider;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -45,7 +46,7 @@ public class WeaponTypes {
                         MyAnimations.GS_Yoimiya_Auto3,
                         MyAnimations.GS_Yoimiya_Auto4,
                         MyAnimations.GS_Yoimiya_Auto5,
-                        MyAnimations.GS_Yoimiya_Auto2, MyAnimations.GS_Yoimiya_FallAtk_Start)
+                        MyAnimations.GS_Yoimiya_Auto2, null)
                 .innateSkill(CapabilityItem.Styles.ONE_HAND, (itemStack) -> MySkills.GS_YOIMIYA_SPECIALATK)
                 .livingMotionModifier(CapabilityItem.Styles.ONE_HAND, LivingMotions.IDLE, yesman.epicfight.gameasset.Animations.BIPED_IDLE)
                 .livingMotionModifier(CapabilityItem.Styles.ONE_HAND, LivingMotions.WALK, yesman.epicfight.gameasset.Animations.BIPED_WALK)
@@ -291,12 +292,12 @@ public class WeaponTypes {
     public static void register(WeaponCapabilityPresetRegistryEvent event){
         Logger LOGGER = LogUtils.getLogger();
         LOGGER.info("Loading WeaponCapability");
-        event.getTypeEntry().put(new ResourceLocation(EpicACG.MODID, "sao_single_sword"), SAO_SINGLE_SWORD);
+        event.getTypeEntry().put(OjangUtils.newRL(EpicACG.MODID, "sao_single_sword"), SAO_SINGLE_SWORD);
         //event.getTypeEntry().put("destiny", DESTINY);
-        event.getTypeEntry().put(new ResourceLocation(EpicACG.MODID, "genshin_bow"), GENSHIN_BOW);
+        event.getTypeEntry().put(OjangUtils.newRL(EpicACG.MODID, "genshin_bow"), GENSHIN_BOW);
         //event.getTypeEntry().put("sr_baseball_bat", SR_BaseBallBat);
-        event.getTypeEntry().put(new ResourceLocation(EpicACG.MODID, "battle_scythe"), BATTLE_SCYTHE);
-        event.getTypeEntry().put(new ResourceLocation(EpicACG.MODID, "gs_spear"), GENSHIN_SPEAR);
+        event.getTypeEntry().put(OjangUtils.newRL(EpicACG.MODID, "battle_scythe"), BATTLE_SCYTHE);
+        event.getTypeEntry().put(OjangUtils.newRL(EpicACG.MODID, "gs_spear"), GENSHIN_SPEAR);
 
         //todo
         //event.getTypeEntry().put("sao_longsword_variant", SAO_LONGSWORD_VARIANT);

@@ -1,6 +1,7 @@
 package com.dfdyz.epicacg.registry;
 
 import com.dfdyz.epicacg.EpicACG;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.google.common.collect.Sets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -33,7 +34,7 @@ public class Sounds {
 
 
     private static RegistryObject<SoundEvent> RegSound(String name) {
-        ResourceLocation r = new ResourceLocation(EpicACG.MODID, name);
+        ResourceLocation r = OjangUtils.newRL(EpicACG.MODID, name);
         return SOUNDS.register(name, () -> {
             return SoundEvent.createVariableRangeEvent(r);
         });

@@ -1,7 +1,9 @@
 package com.dfdyz.epicacg.client.render.pipeline;
 
+import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -90,7 +92,7 @@ public abstract class PostParticleRenderType implements ParticleRenderType {
 
     public abstract PostEffectPipelines.Pipeline getPipeline();
 
-    static ResourceLocation tempTarget = new ResourceLocation("epicacg:depth_cull_temp");
+    static ResourceLocation tempTarget = OjangUtils.newRL(EpicACG.MODID, "depth_cull_temp");
     public static void doDepthCull(RenderTarget source, RenderTarget DepthBuffer){
         RenderTarget tmp = TargetManager.getTarget(tempTarget);
         PostPasses.blit.process(source, tmp);

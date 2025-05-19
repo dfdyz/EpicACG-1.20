@@ -6,6 +6,7 @@ import com.dfdyz.epicacg.client.render.pipeline.PostParticleRenderType;
 import com.dfdyz.epicacg.client.render.targets.ScaledTarget;
 import com.dfdyz.epicacg.config.ClientConfig;
 import com.dfdyz.epicacg.registry.PostPasses;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,7 @@ public class BloomParticleRenderType extends PostParticleRenderType {
         return ppl;
     }
 
-    static final PostEffectPipelines.Pipeline ppl = new Pipeline(new ResourceLocation(EpicACG.MODID, "bloom_particle"));
+    static final PostEffectPipelines.Pipeline ppl = new Pipeline(OjangUtils.newRL(EpicACG.MODID, "bloom_particle"));
 
     public static class Pipeline extends PostEffectPipelines.Pipeline{
         public Pipeline(ResourceLocation name) {
@@ -74,9 +75,9 @@ public class BloomParticleRenderType extends PostParticleRenderType {
 
         }
 
-        //private static ResourceLocation bloom_particle_target = new ResourceLocation(EpicACG.MODID, "bloom_particle_target");
-        //private static ResourceLocation bloom_particle_blur = new ResourceLocation(EpicACG.MODID, "bloom_particle_blur");
-        //private static ResourceLocation bloom_particle_temp = new ResourceLocation(EpicACG.MODID, "bloom_particle_temp");
+        //private static ResourceLocation bloom_particle_target = OjangUtils.newRL(EpicACG.MODID, "bloom_particle_target");
+        //private static ResourceLocation bloom_particle_blur = OjangUtils.newRL(EpicACG.MODID, "bloom_particle_blur");
+        //private static ResourceLocation bloom_particle_temp = OjangUtils.newRL(EpicACG.MODID, "bloom_particle_temp");
 
         RenderTarget[] blur;
         RenderTarget[] blur_;

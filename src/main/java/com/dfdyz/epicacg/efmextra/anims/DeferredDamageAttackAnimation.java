@@ -6,12 +6,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
+import yesman.epicfight.api.animation.AnimationClip;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.HitEntityList;
@@ -21,28 +24,32 @@ import yesman.epicfight.world.capabilities.entitypatch.MobPatch;
 import java.util.List;
 
 public class DeferredDamageAttackAnimation extends ScanAttackAnimation {
-
-
-    public DeferredDamageAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, path, armature);
-    }
-
-    public DeferredDamageAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, preDelay, contact, recovery, hand, collider, colliderJoint, path, armature);
-    }
-
-    public DeferredDamageAttackAnimation(float convertTime, String path, Armature armature, Phase... phases) {
-        super(convertTime, path, armature, phases);
-    }
-
-    public DeferredDamageAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint scanner, String path, Armature model) {
-        super(convertTime, antic, contact, recovery, hand, collider, scanner, path, model);
-        addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
+    public DeferredDamageAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends DeferredDamageAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, accessor, armature);
     }
 
     @Override
-    public void attackTick(LivingEntityPatch<?> entitypatch, DynamicAnimation animation) {
-        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this);
+    public AnimationClip getAnimationClip() {
+        return super.getAnimationClip();
+    }
+
+    public DeferredDamageAttackAnimation(float convertTime, float antic, float preDelay, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends DeferredDamageAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, preDelay, contact, recovery, hand, collider, colliderJoint, accessor, armature);
+    }
+
+    public DeferredDamageAttackAnimation(float convertTime, AnimationManager.AnimationAccessor<? extends DeferredDamageAttackAnimation> accessor, AssetAccessor<? extends Armature> armature, Phase... phases) {
+        super(convertTime, accessor, armature, phases);
+    }
+
+    public DeferredDamageAttackAnimation(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint scanner, AnimationManager.AnimationAccessor<? extends DeferredDamageAttackAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, contact, recovery, hand, collider, scanner, accessor, armature);
+        addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
+    }
+
+
+    @Override
+    public void attackTick(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> animation) {
+        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this.getAccessor());
         float elapsedTime = player.getElapsedTime();
         float prevElapsedTime = player.getPrevElapsedTime();
         EntityState state = this.getState(entitypatch, elapsedTime);
@@ -92,7 +99,7 @@ public class DeferredDamageAttackAnimation extends ScanAttackAnimation {
     }
 
     @Override
-    public void end(LivingEntityPatch<?> entitypatch, DynamicAnimation nextAnimation, boolean isEnd) {
+    public void end(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> nextAnimation, boolean isEnd) {
         super.end(entitypatch, nextAnimation, isEnd);
         entitypatch.removeHurtEntities();
     }

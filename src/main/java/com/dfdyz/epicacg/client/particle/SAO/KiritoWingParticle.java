@@ -25,11 +25,10 @@ import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.client.animation.property.TrailInfo;
-import yesman.epicfight.api.client.model.ItemSkin;
-import yesman.epicfight.api.client.model.ItemSkins;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.client.ClientEngine;
+import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
@@ -39,7 +38,7 @@ import java.util.Optional;
 public class KiritoWingParticle extends Particle {
     private final Joint joint;
     private final TrailInfo trailInfo;
-    private final StaticAnimation animation;
+    private final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
     private final LivingEntityPatch<?> entitypatch;
     private boolean animationEnd = false;
 
@@ -68,7 +67,7 @@ public class KiritoWingParticle extends Particle {
             .rotate(Vec3f.Z_AXIS, -40)
             .move(0,0.2f,0.2f);
 
-    public KiritoWingParticle(ClientLevel level, LivingEntityPatch<?> entitypatch, Joint joint, StaticAnimation animation, TrailInfo trailInfo) {
+    public KiritoWingParticle(ClientLevel level, LivingEntityPatch<?> entitypatch, Joint joint, AnimationManager.AnimationAccessor<? extends StaticAnimation> animation, TrailInfo trailInfo) {
         super(level, 0,0,0);
 
         this.joint = joint;
@@ -77,7 +76,7 @@ public class KiritoWingParticle extends Particle {
         this.hasPhysics = false;
         this.trailInfo = trailInfo;
 
-        this.lifetime = trailInfo.trailLifetime;
+        this.lifetime = trailInfo.trailLifetime();
 
         this.rCol = 1;
         this.gCol = 1;
@@ -103,16 +102,16 @@ public class KiritoWingParticle extends Particle {
 
         if (this.animationEnd) {
             oAlpha = alpha;
-            alpha -= 1.0f / trailInfo.trailLifetime;
+            alpha -= 1.0f / trailInfo.trailLifetime();
             if (this.lifetime-- == 0) {
                 this.remove();
             }
         } else {
-            if (!this.entitypatch.getOriginal().isAlive()
-                    || this.animation != animPlayer.getAnimation().getRealAnimation()
-                    || animPlayer.getElapsedTime() > this.trailInfo.endTime) {
+            if (animPlayer != null && (!this.entitypatch.getOriginal().isAlive()
+                    || this.animation != animPlayer.getAnimation().get().getRealAnimation()
+                    || animPlayer.getElapsedTime() > this.trailInfo.endTime())) {
                 this.animationEnd = true;
-                this.lifetime = this.trailInfo.trailLifetime;
+                this.lifetime = this.trailInfo.trailLifetime();
             }
         }
 
@@ -129,13 +128,13 @@ public class KiritoWingParticle extends Particle {
     @Override
     public void render(VertexConsumer vertexConsumer, Camera camera, float pt) {
         if(!PostEffectPipelines.isActive() || !this.entitypatch.getOriginal().isAlive()) return;
-        EpicACGRenderType.getBloomRenderTypeByTexture(trailInfo.texturePath).callPipeline();
+        EpicACGRenderType.getBloomRenderTypeByTexture(trailInfo.texturePath()).callPipeline();
         AnimationPlayer animPlayer = this.entitypatch.getAnimator().getPlayerFor(this.animation);
         float elapsedTime = Mth.lerp(pt, animPlayer.getPrevElapsedTime(), animPlayer.getElapsedTime());
 
         //System.out.println("sssss");
 
-        if(animationEnd && elapsedTime < trailInfo.startTime){
+        if(animationEnd && elapsedTime < trailInfo.startTime()){
             return;
         }
         //RenderUtils.GLSetTexture(trailInfo.texturePath);
@@ -166,7 +165,7 @@ public class KiritoWingParticle extends Particle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return EpicACGRenderType.getBloomRenderTypeByTexture(trailInfo.texturePath);
+        return EpicACGRenderType.getBloomRenderTypeByTexture(trailInfo.texturePath());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -177,7 +176,6 @@ public class KiritoWingParticle extends Particle {
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             int eid = (int)Double.doubleToRawLongBits(x);
-            //int modid = (int)Double.doubleToRawLongBits(y);
             int animid = (int)Double.doubleToRawLongBits(z);
             int jointId = (int)Double.doubleToRawLongBits(xSpeed);
             int idx = (int)Double.doubleToRawLongBits(ySpeed);
@@ -185,20 +183,24 @@ public class KiritoWingParticle extends Particle {
 
             if (entity != null) {
                 LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
-                StaticAnimation animation = AnimationManager.getInstance().byId(animid);
-                Optional<List<TrailInfo>> trailInfo = animation.getProperty(ClientAnimationProperties.TRAIL_EFFECT);
+                var animation = AnimationManager.getInstance().byId(animid);
+                Optional<List<TrailInfo>> trailInfo = animation.get().getProperty(ClientAnimationProperties.TRAIL_EFFECT);
+
+                if (trailInfo.isEmpty()) {
+                    return null;
+                }
+
                 TrailInfo result = trailInfo.get().get(idx);
+                if (result.hand() != null) {
+                    ItemStack stack = entitypatch.getOriginal().getItemInHand(result.hand());
+                    RenderItemBase renderItemBase = ClientEngine.getInstance().renderEngine.getItemRenderer(stack);
 
-                if (result.hand != null) {
-                    ItemStack stack = entitypatch.getOriginal().getItemInHand(result.hand);
-                    ItemSkin itemSkin = ItemSkins.getItemSkin(stack.getItem());
-
-                    if (itemSkin != null) {
-                        result = itemSkin.trailInfo().overwrite(result);
+                    if (renderItemBase != null && renderItemBase.trailInfo() != null) {
+                        result = renderItemBase.trailInfo().overwrite(result);
                     }
                 }
 
-                if (entitypatch != null && animation != null && trailInfo.isPresent()) {
+                if (entitypatch != null && result.playable()) {
                     return new KiritoWingParticle(level, entitypatch, entitypatch.getArmature().searchJointById(jointId), animation, result);
                 }
             }

@@ -11,6 +11,7 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.StunType;
 
+/*
 public class TrashBinMasterPatch extends LivingEntityPatch<TrashBinMasterEntity> {
     @Override
     public void initAnimator(Animator animator) {
@@ -26,4 +27,4 @@ public class TrashBinMasterPatch extends LivingEntityPatch<TrashBinMasterEntity>
     public StaticAnimation getHitAnimation(StunType stunType) {
         return null;
     }
-}
+}*/

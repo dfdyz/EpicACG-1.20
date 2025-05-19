@@ -8,7 +8,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Map;
 
 public class RenderConfig {
-    public static Map<String, Trail> TrailItem = Maps.newHashMap();
+    //public static Map<String, Trail> TrailItem = Maps.newHashMap();
     //public static final Map<String, Function<ItemStack,Trail>> SpecialTrailItem = Maps.newHashMap();
     //public static Map<String, HealthBarStyle> HealthBarEntity = Maps.newHashMap();
 
@@ -17,8 +17,8 @@ public class RenderConfig {
     }
 
     static {
-        TrailItem.put("minecraft:diamond_sword",new  Trail(0,0,-0.1f,0,0,-1.0f,0,249,255,140));
-        TrailItem.put("minecraft:golden_sword",new  Trail(0,0,-0.1f,0,0,-1.0f,255,255,51,140));
+        //TrailItem.put("minecraft:diamond_sword",new  Trail(0,0,-0.1f,0,0,-1.0f,0,249,255,140));
+        //TrailItem.put("minecraft:golden_sword",new  Trail(0,0,-0.1f,0,0,-1.0f,255,255,51,140));
 
         //TrailItem.put("epicaddon:elucidator",new  Trail(0,0,-0.18f,0,0,-1.47f,0,249,255,140));
         //TrailItem.put("epicaddon:dark_repulsor",new  Trail(0,0,-0.18f,0,0,-1.47f,0,249,255,140));

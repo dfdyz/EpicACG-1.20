@@ -2,6 +2,7 @@ package com.dfdyz.epicacg.utils;
 
 import com.dfdyz.epicacg.EpicACG;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,7 @@ public class RenderUtils {
     }
 
     public static ResourceLocation GetTexture(String path){
-        return new ResourceLocation(EpicACG.MODID, "textures/" + path + ".png");
+        return OjangUtils.newRL(EpicACG.MODID, "textures/" + path + ".png");
     }
 
     public static class Quad{
@@ -176,5 +177,33 @@ public class RenderUtils {
 
     }
 
+    private static final OpenMatrix4f OPEN_MATRIX_BUFFER = new OpenMatrix4f();
 
+    public static void translateStack(PoseStack poseStack, OpenMatrix4f mat) {
+        poseStack.translate(mat.m30, mat.m31, mat.m32);
+    }
+
+    public static void rotateStack(PoseStack poseStack, OpenMatrix4f mat) {
+        OpenMatrix4f.transpose(mat, OPEN_MATRIX_BUFFER);
+        poseStack.mulPose(getQuaternionFromMatrix(OPEN_MATRIX_BUFFER));
+    }
+
+    public static void scaleStack(PoseStack poseStack, OpenMatrix4f mat) {
+        OpenMatrix4f.transpose(mat, OPEN_MATRIX_BUFFER);
+        Vector3f vector = getScaleVectorFromMatrix(OPEN_MATRIX_BUFFER);
+        poseStack.scale(vector.x(), vector.y(), vector.z());
+    }
+
+    private static Vector3f getScaleVectorFromMatrix(OpenMatrix4f mat) {
+        Vec3f a = new Vec3f(mat.m00, mat.m10, mat.m20);
+        Vec3f b = new Vec3f(mat.m01, mat.m11, mat.m21);
+        Vec3f c = new Vec3f(mat.m02, mat.m12, mat.m22);
+        return new Vector3f(a.length(), b.length(), c.length());
+    }
+
+    private static Quaternionf getQuaternionFromMatrix(OpenMatrix4f mat) {
+        Quaternionf quat = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
+        quat.setFromUnnormalized(OpenMatrix4f.exportToMojangMatrix(mat.transpose((OpenMatrix4f)null)));
+        return quat;
+    }
 }

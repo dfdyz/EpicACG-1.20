@@ -3,6 +3,7 @@ package com.dfdyz.epicacg.config;
 
 import com.dfdyz.epicacg.utils.DeathParticleHandler;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.jline.utils.InputStreamReader;
@@ -90,9 +91,9 @@ public class ClientConfig {
             WriteString(cfgpath, CommonConfig.GSON.toJson(DeathParticleHandler.config));
         }
 
-/*
-        LOGGER.info("EpicAddon:Loading Common Config");
-        cfgpath = FMLPaths.CONFIGDIR.get().resolve("EpicAddonCommon.json").toString();
+
+        LOGGER.info("EpicAddon:Loading Client Config");
+        cfgpath = FMLPaths.CONFIGDIR.get().resolve("EpicAddonClient.json").toString();
         json = ReadString(cfgpath);
         //LOGGER.info(json);
         if(json != ""){
@@ -106,7 +107,7 @@ public class ClientConfig {
         else{
             WriteString(cfgpath, CommonConfig.GSON.toJson(cfg));
         }
-*/
+
         //GlobalVal.ANG = cfg.InitialAngle;
 
         //RenderConfig.TrailItem = GSON.fromJson(json, new TypeToken<Map<String,Trail>>(){}.getType());
@@ -114,7 +115,7 @@ public class ClientConfig {
     }
 
     public static void SaveClientCfg(){
-        String cfgpath = FMLPaths.CONFIGDIR.get().resolve("EpicAddonCommon.json").toString();
+        String cfgpath = FMLPaths.CONFIGDIR.get().resolve("EpicAddonClient.json").toString();
         LOGGER.info("EpicAddon:Save Common Config");
         WriteString(cfgpath, CommonConfig.GSON.toJson(cfg));
     }

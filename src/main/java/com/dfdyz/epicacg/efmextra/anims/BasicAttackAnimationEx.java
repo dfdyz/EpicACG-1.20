@@ -8,11 +8,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.*;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
@@ -26,23 +28,23 @@ import java.util.List;
 
 public class BasicAttackAnimationEx extends BasicAttackAnimation {
 
-    public BasicAttackAnimationEx(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, contact, recovery, collider, colliderJoint, path, armature);
+    public BasicAttackAnimationEx(float convertTime, float antic, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends BasicAttackAnimationEx> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, contact, recovery, collider, colliderJoint, accessor, armature);
         reBindPhasesStates(false, false);
     }
 
-    public BasicAttackAnimationEx(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, path, armature);
+    public BasicAttackAnimationEx(float convertTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends BasicAttackAnimationEx> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, preDelay, contact, recovery, collider, colliderJoint, accessor, armature);
         reBindPhasesStates(false, false);
     }
 
-    public BasicAttackAnimationEx(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, String path, Armature armature) {
-        super(convertTime, antic, contact, recovery, hand, collider, colliderJoint, path, armature);
+    public BasicAttackAnimationEx(float convertTime, float antic, float contact, float recovery, InteractionHand hand, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends BasicAttackAnimationEx> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, antic, contact, recovery, hand, collider, colliderJoint, accessor, armature);
         reBindPhasesStates(false, false);
     }
 
-    public BasicAttackAnimationEx(float convertTime, String path, Armature armature, Phase... phases) {
-        super(convertTime, path, armature, phases);
+    public BasicAttackAnimationEx(float convertTime, AnimationManager.AnimationAccessor<? extends BasicAttackAnimationEx> accessor, AssetAccessor<? extends Armature> armature, Phase... phases) {
+        super(convertTime, accessor, armature, phases);
         reBindPhasesStates(false, false);
         addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, false);
         addProperty(AnimationProperty.ActionAnimationProperty.MOVE_VERTICAL, true);
@@ -77,6 +79,7 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
     @Override
     protected void hurtCollidingEntities(LivingEntityPatch<?> entitypatch, float prevElapsedTime, float elapsedTime, EntityState prevState, EntityState state, Phase phase) {
         //super.hurtCollidingEntities(entitypatch, prevElapsedTime, elapsedTime, prevState, state, phase);
+
         LivingEntity entity = entitypatch.getOriginal();
         float prevPoseTime = prevState.attacking() ? prevElapsedTime : phase.preDelay;
         float poseTime = state.attacking() ? elapsedTime : phase.contact;
@@ -90,7 +93,7 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
                 Entity hitten = hitEntities.getEntity();
                 LivingEntity trueEntity = this.getTrueEntity(hitten);
 
-                if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTeammate(hitten)) {
+                if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTargetInvulnerable(hitten)) {
                     if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
                         if (entity.hasLineOfSight(hitten)) {
                             EpicFightDamageSource damagesource = this.getEpicFightDamageSource(entitypatch, hitten, phase);

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import static com.dfdyz.epicacg.registry.MySkillDataKeys.CHILD_SKILL_INDEX;
 
 public class MultiSpecialSkill extends PassiveSkill {
-    public MultiSpecialSkill(Builder<? extends Skill> builder) {
+    public MultiSpecialSkill(SkillBuilder<? extends PassiveSkill> builder) {
         super(builder);
     }
 
@@ -51,13 +51,13 @@ public class MultiSpecialSkill extends PassiveSkill {
 
     @OnlyIn(Dist.CLIENT)
     public boolean shouldDraw(SkillContainer container) {
-        SkillContainer sa = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE);
+        SkillContainer sa = container.getExecutor().getSkill(SkillSlots.WEAPON_INNATE);
         //System.out.println(sa != null && sa.getSkill() instanceof IMutiSpecialSkill);
         return sa != null && sa.getSkill() instanceof IMutiSpecialSkill;
     }
 
     protected IMutiSpecialSkill getSAInstance(SkillContainer container){
-        Skill sa = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill();
+        Skill sa = container.getExecutor().getSkill(SkillSlots.WEAPON_INNATE).getSkill();
         if(sa != null && sa instanceof IMutiSpecialSkill) return (IMutiSpecialSkill) sa;
         else return null;
     }
@@ -68,7 +68,7 @@ public class MultiSpecialSkill extends PassiveSkill {
 
     @Override
     public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float _x, float _y) {
-        Skill sa = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill();
+        Skill sa = container.getExecutor().getSkill(SkillSlots.WEAPON_INNATE).getSkill();
         //EpicAddon.LOGGER.info("?????");
         if(sa == null) return;
         //EpicAddon.LOGGER.info("11111");
@@ -76,18 +76,27 @@ public class MultiSpecialSkill extends PassiveSkill {
         //EpicAddon.LOGGER.info("?????");
         //Vec3f pos = new Vec3f(42F, 48F, 0.117F);
         //float scale = 0.078F;
-        float x = 42F;
-        float y = 48F;
+        float x = _x - 20;
+        float y = _y - 44;
 
         PoseStack matStackIn = guiGraphics.pose();
 
         Window sr = Minecraft.getInstance().getWindow();
-        int width = sr.getGuiScaledWidth();
-        int height = sr.getGuiScaledHeight();
+        //int width = sr.getGuiScaledWidth();
+        //int height = sr.getGuiScaledHeight();
 
         IMutiSpecialSkill saInstance = (IMutiSpecialSkill) sa;
 
-        ArrayList<ResourceLocation> textures = saInstance.getSkillTextures(container.getExecuter());
+        ArrayList<ResourceLocation> textures = saInstance.getSkillTextures(container.getExecutor());
+
+        /*
+        matStackIn.pushPose();
+        matStackIn.scale(0.085F, 0.085F, 1.0F);
+        matStackIn.translate(0.0, (float)gui.getSlidingProgression() * 1.0F / 0.085F, 0.0);
+        RenderSystem.setShaderTexture(0, EpicACGRenderType.ChildSkillnoSelected);
+        drawTexturedModalRectFixCoord(gui, matStackIn.last().pose(), x / 0.085F, y / 0.085F, 0, 0, 255, 255
+                , FastColor.ARGB32.color(200,200,200,200));
+        matStackIn.popPose();*/
 
         int active = Math.min(textures.size()-1,container.getDataManager().getDataValue(CHILD_SKILL_INDEX.get()));
         for(int i=0; i<textures.size(); ++i){
@@ -114,13 +123,15 @@ public class MultiSpecialSkill extends PassiveSkill {
             //System.out.println(FastColor.ARGB32.color(200,255,255,255));
 
             RenderSystem.setShaderTexture(0, actived ? EpicACGRenderType.ChildSkillSelected : EpicACGRenderType.ChildSkillnoSelected);
-            drawTexturedModalRectFixCoord(gui, matStackIn.last().pose(), (float)(width - x + ox) * scaleMultiply, (float)(height - y + oy) * scaleMultiply, 0, 0, 255, 255
+            drawTexturedModalRectFixCoord(gui, matStackIn.last().pose(), (float)(x + ox) * scaleMultiply, (float)(y + oy) * scaleMultiply, 0, 0, 255, 255
                     , FastColor.ARGB32.color(200,200,200,200));
 
-            boolean canExe = saInstance.isSkillActive(container.getExecuter(), i);
+
+
+            boolean canExe = saInstance.isSkillActive(container.getExecutor(), i);
 
             RenderSystem.setShaderTexture(0, t);
-            drawTexturedModalRectFixCoord(gui,matStackIn.last().pose(), (float)(width - x + ox) * scaleMultiply, (float)(height - y + oy) * scaleMultiply, 0, 0, 255, 255
+            drawTexturedModalRectFixCoord(gui,matStackIn.last().pose(), (float)(x + ox) * scaleMultiply, (float)(y + oy) * scaleMultiply, 0, 0, 255, 255
                     ,canExe ? canExeCol : cannotExeCol);
             //matStackIn.scale(scaleMultiply, scaleMultiply, 1.0F);
             matStackIn.popPose();
@@ -134,7 +145,7 @@ public class MultiSpecialSkill extends PassiveSkill {
     }
 
     public void drawTexturedModalRectFixCoord(BattleModeGui ingameGui, Matrix4f matrix, float xCoord, float yCoord, int minU, int minV, int maxU, int maxV, int col) {
-        drawTexturedModalRectFixCoord(matrix, xCoord, yCoord, (float)maxU, (float)maxV, (float)ingameGui.getBlitOffset(), (float)minU, (float)minV, (float)maxU, (float)maxV, col);
+        drawTexturedModalRectFixCoord(matrix, xCoord, yCoord, (float)maxU, (float)maxV, (float)0, (float)minU, (float)minV, (float)maxU, (float)maxV, col);
     }
 
     public static void drawTexturedModalRectFixCoord(Matrix4f matrix, float minX, float minY, float maxX, float maxY, float z, float minU, float minV, float maxU, float maxV, int col) {

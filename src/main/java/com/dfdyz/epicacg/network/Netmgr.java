@@ -2,6 +2,7 @@ package com.dfdyz.epicacg.network;
 
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.network.Client.C_RollSkillSelect;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -9,7 +10,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import static com.dfdyz.epicacg.EpicACG.VERSION;
 
 public class Netmgr {
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(EpicACG.MODID, "network_manager"),
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(OjangUtils.newRL(EpicACG.MODID, "network_manager"),
             () -> VERSION, VERSION::equals, VERSION::equals);
 
     public static <MSG> void sendToServer(MSG message) {

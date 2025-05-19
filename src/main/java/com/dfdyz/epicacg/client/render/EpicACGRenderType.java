@@ -3,12 +3,12 @@ package com.dfdyz.epicacg.client.render;
 
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.render.custom.*;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.dfdyz.epicacg.utils.RenderUtils;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 import static com.dfdyz.epicacg.utils.RenderUtils.GetTexture;
 import static net.minecraft.client.renderer.GameRenderer.*;
+import static yesman.epicfight.client.particle.EntityAfterImageParticle.WHITE;
 
 @OnlyIn(Dist.CLIENT)
 public class EpicACGRenderType {
@@ -36,7 +37,7 @@ public class EpicACGRenderType {
     public static final ResourceLocation BLOOD_THIRSTY_PARTICLE_TEX = GetTexture("particle/bloodthirsty_hit");
 
     public static final BloomParticleRenderType SAO_DEATH_PARTICLE = new BloomParticleRenderType(
-            new ResourceLocation(EpicACG.MODID, "sao_death"),
+            OjangUtils.newRL(EpicACG.MODID, "sao_death"),
             GetTexture("particle/sao_death")
     );
 
@@ -47,11 +48,37 @@ public class EpicACGRenderType {
             return BloomRenderTypes.get(texture);
         }
         else {
-            BloomParticleRenderType bloomType = new BloomParticleRenderType(new ResourceLocation(EpicACG.MODID, "bloom_particle_" + bloomIdx++), texture);
+            BloomParticleRenderType bloomType = new BloomParticleRenderType(OjangUtils.newRL(EpicACG.MODID, "bp_" + bloomIdx++), texture);
             BloomRenderTypes.put(texture, bloomType);
             return bloomType;
         }
     }
+
+    public static BloomTrailRenderType getBloomTrailRT(ResourceLocation texture){
+        if(BloomRenderTypes.containsKey(texture)){
+            return (BloomTrailRenderType)BloomRenderTypes.get(texture);
+        }
+        else {
+            BloomTrailRenderType bloomType = new BloomTrailRenderType(OjangUtils.newRL(EpicACG.MODID, "bt_" + bloomIdx++), texture);
+            BloomRenderTypes.put(texture, bloomType);
+            return bloomType;
+        }
+    }
+
+    public static BloomParticleRenderType BLOOM_POSITION_COLOR_LIGHTMAP = new BloomParticleRenderType(
+            OjangUtils.newRL(EpicACG.MODID, "b_fpcl"),
+            WHITE){
+        @Override
+        public void setupBufferBuilder(BufferBuilder bufferBuilder) {
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP);
+        }
+
+        @Override
+        protected ShaderInstance getShader() {
+            return positionColorLightmapShader;
+        }
+    };
+
 
     private static int quadIdx = 0;
     public static final HashMap<ResourceLocation, EpicACGQuadParticleRenderType> QuadRenderTypes = Maps.newHashMap();
@@ -80,31 +107,31 @@ public class EpicACGRenderType {
     }
 
 
-    public static SpaceBrokenRenderType SpaceBroken1 = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken" ), 0);
-    public static SpaceBrokenRenderType SpaceBroken2 = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken" ), 1);
+    public static SpaceBrokenRenderType SpaceBroken1 = new SpaceBrokenRenderType(OjangUtils.newRL(EpicACG.MODID, "space_broken" ), 0);
+    public static SpaceBrokenRenderType SpaceBroken2 = new SpaceBrokenRenderType(OjangUtils.newRL(EpicACG.MODID, "space_broken" ), 1);
 
-    public static SpaceBrokenRenderType SpaceBrokenEnd = new SpaceBrokenRenderType(new ResourceLocation(EpicACG.MODID, "space_broken_end" ), RenderUtils.GetTexture("particle/glass"), 0, 4);
-    public static BlockHoleRenderType GravLens = new BlockHoleRenderType(new ResourceLocation(EpicACG.MODID, "black_hole"),
+    public static SpaceBrokenRenderType SpaceBrokenEnd = new SpaceBrokenRenderType(OjangUtils.newRL(EpicACG.MODID, "space_broken_end" ), RenderUtils.GetTexture("particle/glass"), 0, 4);
+    public static BlockHoleRenderType GravLens = new BlockHoleRenderType(OjangUtils.newRL(EpicACG.MODID, "black_hole"),
             GetTexture("particle/black_hole"));
 
-    public static SubMaskRenderType SubMask = new SubMaskRenderType(new ResourceLocation(EpicACG.MODID, "sub_mask"),
+    public static SubMaskRenderType SubMask = new SubMaskRenderType(OjangUtils.newRL(EpicACG.MODID, "sub_mask"),
             GetTexture("none")
     );
 
-    public static SubSpaceRenderType SubSpace_BlackHole = new SubSpaceRenderType(new ResourceLocation(EpicACG.MODID, "sub_space"),
+    public static SubSpaceRenderType SubSpace_BlackHole = new SubSpaceRenderType(OjangUtils.newRL(EpicACG.MODID, "sub_space"),
             GetTexture("none")
     );
 
     /*
             //new EpicACGQuadParticleRenderType("textures/particle/genshin_bow", "GENSHIN_BOW");
     public static final ParticleRenderType GENSHIN_BOW_LANDING_PARTICLE = new PostQuadParticleRT(
-                    new ResourceLocation(EpicACG.MODID, "genshin_bow")
+                    OjangUtils.newRL(EpicACG.MODID, "genshin_bow")
 //                    GetTextures("particle/genshin_bow_landing")
             );
                     //new EpicACGQuadParticleRenderType("textures/particle/genshin_bow_landing", "GENSHIN_BOW");
 
     public static final ParticleRenderType GENSHIN_BOW_LANDING_PARTICLE3 = new PostQuadParticleRT(
-            new ResourceLocation(EpicACG.MODID, "genshin_bow")
+            OjangUtils.newRL(EpicACG.MODID, "genshin_bow")
 //            GetTextures("particle/genshin_bow_landing3")
     );
             //new EpicACGQuadParticleRenderType("textures/particle/genshin_bow_landing3", "GENSHIN_BOW");
@@ -148,6 +175,9 @@ public class EpicACGRenderType {
             return Name;
         }
     };
+
+
+
 
 
     public static class EpicACGQuadParticleRenderType implements ParticleRenderType {

@@ -5,7 +5,6 @@ import net.minecraft.util.Mth;
 import org.apache.commons.lang3.RandomUtils;
 
 public class ExplosionRumbleClip implements IRumbleClip {
-
     public final float lowFrequency, highFrequency, close_time;
     public final int lifetime, wait_time, top_time;
 

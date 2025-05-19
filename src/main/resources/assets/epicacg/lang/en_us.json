@@ -10,6 +10,7 @@
   "item.epicacg.destiny": "-Destiny-",
   "item.epicacg.training_bow": "Training Bow",
   "item.epicacg.custom_skillbook": "Skill Book",
+  "item.epicacg.slime_spear": "Spear(not complete)",
 
   "item.epicacg.firefly_sword": "Glamoth's Standard Melee Weapon - FireflyIV",
 
@@ -43,6 +44,8 @@
   "skill.epicacg.battle_scythe_sa": "Sheathed Blade",
   "skill.epicacg.battle_scythe_sa.tooltip": "Advance forward, flash and cut quickly",
 
+  "skill.epicacg.sao_dual_sword_sa": "DUAL SWORD SPECIAL ATTACK",
+  "skill.epicacg.sao_dual_sword_sa.tooltip": "\n",
 
   "skill.epicacg.gs_yoimiya_sa": "Dance of Bow",
   "skill.epicacg.gs_yoimiya_sa.tooltip": "Firework !",

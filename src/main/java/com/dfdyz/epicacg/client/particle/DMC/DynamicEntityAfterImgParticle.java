@@ -16,11 +16,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.client.model.AnimatedMesh;
-import yesman.epicfight.api.client.model.MeshProvider;
+import yesman.epicfight.api.asset.AssetAccessor;
+import yesman.epicfight.api.client.model.SkinnedMesh;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
+import yesman.epicfight.api.utils.math.QuaternionUtils;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.particle.CustomModelParticle;
@@ -29,7 +30,7 @@ import yesman.epicfight.client.renderer.patched.entity.PatchedEntityRenderer;
 import yesman.epicfight.client.renderer.shader.AnimationShaderInstance;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
-public class DynamicEntityAfterImgParticle extends CustomModelParticle<AnimatedMesh> {
+public class DynamicEntityAfterImgParticle extends CustomModelParticle<SkinnedMesh> {
     private OpenMatrix4f[] poseMatrices;
     private Matrix4f modelMatrix;
 
@@ -37,7 +38,7 @@ public class DynamicEntityAfterImgParticle extends CustomModelParticle<AnimatedM
                                          double x, double y, double z,
                                          double xd, double yd, double zd,
                                          int lft,
-                                         MeshProvider<AnimatedMesh> particleMesh,
+                                         AssetAccessor<SkinnedMesh> particleMesh,
                                          OpenMatrix4f[] matrices,
                                          Matrix4f modelMatrix) {
         super(level, x, y, z, xd, yd, zd, particleMesh);
@@ -118,22 +119,21 @@ public class DynamicEntityAfterImgParticle extends CustomModelParticle<AnimatedM
 
     public static DynamicEntityAfterImgParticle create(
             LivingEntityPatch<?> entitypatch,
-            StaticAnimation animation,
+            AssetAccessor<? extends StaticAnimation> animation,
             double x, double y, double z,
             double xd, double yd, double zd,
             int lifeTime,
             float animTime
     ) {
         PatchedEntityRenderer renderer = ClientEngine.getInstance().renderEngine.getEntityRenderer(entitypatch.getOriginal());
-
         Armature armature = entitypatch.getArmature();
-        var mesh = ClientEngine.getInstance().renderEngine.getEntityRenderer(entitypatch.getOriginal()).getMeshProvider(entitypatch);
-
-        Pose modelPose = animation.getPoseByTime(entitypatch, animTime, 0);
-        modelPose.getOrDefaultTransform("Root").translation().set(0,0,0);
-
         PoseStack poseStack = new PoseStack();
-        OpenMatrix4f[] matrices = renderer.getPoseMatrices(entitypatch, armature, 1.0F, true);
+        var pose = animation.get().getPoseByTime(entitypatch, animTime, 0);
+        renderer.setJointTransforms(entitypatch, armature, pose, 1.0F);
+        OpenMatrix4f[] matrices = armature.getPoseAsTransformMatrix(pose, true);
+        AssetAccessor<SkinnedMesh> mesh =
+                ClientEngine.getInstance().renderEngine.getEntityRenderer(entitypatch.getOriginal()).getMeshProvider(entitypatch);
+
         MulPoseWithoutRot(entitypatch, poseStack);
         DynamicEntityAfterImgParticle particle = new DynamicEntityAfterImgParticle(
                 (ClientLevel) entitypatch.getOriginal().level(), x,y,z, xd,yd,zd, lifeTime, mesh, matrices, poseStack.last().pose()
@@ -143,6 +143,8 @@ public class DynamicEntityAfterImgParticle extends CustomModelParticle<AnimatedM
 
     static final Quaternionf rot_quat_y = new Quaternionf().rotateY(180);
     static final Quaternionf rot_quat_z = new Quaternionf().rotateZ(180);
+
+
     public static void MulPoseWithoutRot(LivingEntityPatch<?> entitypatch, PoseStack poseStack){
         float scale = entitypatch.getOriginal().isBaby() ? 0.5F : 1.0F;
         OpenMatrix4f modelMatrix = MathUtils.getModelMatrixIntegral(0.0F, 0.0F, 0.0F, 0.0F,
@@ -151,15 +153,15 @@ public class DynamicEntityAfterImgParticle extends CustomModelParticle<AnimatedM
 
         poseStack.mulPose(rot_quat_y);
 
-        MathUtils.translateStack(poseStack, modelMatrix);
-        MathUtils.rotateStack(poseStack, transpose);
-        MathUtils.scaleStack(poseStack, transpose);
+        RenderUtils.translateStack(poseStack, modelMatrix);
+        RenderUtils.rotateStack(poseStack, transpose);
+        RenderUtils.scaleStack(poseStack, transpose);
 
         LivingEntity livingEntity = entitypatch.getOriginal();
 
         if (LivingEntityRenderer.isEntityUpsideDown(livingEntity)) {
-                poseStack.translate(0.0, livingEntity.getBbHeight() + 0.1F, 0.0);
-                poseStack.mulPose(rot_quat_z);
+            poseStack.translate(0.0, livingEntity.getBbHeight() + 0.1F, 0.0);
+            poseStack.mulPose(rot_quat_z);
         }
     }
 

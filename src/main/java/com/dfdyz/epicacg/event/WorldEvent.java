@@ -15,7 +15,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -33,19 +35,22 @@ public class WorldEvent {
     }*/
 
 
+    /*
     @SubscribeEvent
     public static void OnEntityDeath(LivingDeathEvent event){
         LivingEntity entity = event.getEntity();
         Level level = entity.level();
         if(!level.isClientSide()) return;
         //System.out.println(entity.getType().getRegistryName().toString());
-        DeathEntities.add(entity);
+        //DeathEntities.add(entity);
 
             //System.out.println(box.toString());
 
     }
+     */
 
-    public static final LinkedList<LivingEntity> DeathEntities = Lists.newLinkedList();
+    
+    //public static final LinkedList<LivingEntity> DeathEntities = Lists.newLinkedList();
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
@@ -56,6 +61,7 @@ public class WorldEvent {
         GlobalVal.WX = (float) Math.cos(GlobalVal.WANG);
         GlobalVal.WZ = -(float) Math.sin(GlobalVal.WANG);
 
+        /*
         DeathEntities.forEach((entity) -> {
             if(entity.deathTime >= 18 && ClientConfig.cfg.EnableDeathParticle){
                 ShootDeathParticle(entity);
@@ -64,10 +70,10 @@ public class WorldEvent {
 
         DeathEntities.removeIf((entity) -> {
             return entity.deathTime >= 18;
-        });
+        });*/
     }
 
-    private static void ShootDeathParticle(LivingEntity entity){
+    public static void ShootDeathParticle(LivingEntity entity){
         //System.out.println("dddddd");
         Level level = entity.level();
 

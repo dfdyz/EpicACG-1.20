@@ -9,6 +9,7 @@ import com.dfdyz.epicacg.config.ClientConfig;
 import com.dfdyz.epicacg.registry.MyAnimations;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -35,7 +36,7 @@ public class ClientCommands {
     protected static LiteralArgumentBuilder<CommandSourceStack> command;
 
     public static void Debug(){
-        //if(true) return;
+        if(true) return;
         try{
             //MyModels.LoadOtherModel();
 
@@ -63,6 +64,9 @@ public class ClientCommands {
             throw new RuntimeException(e);
         }
     }
+
+
+
     public static void registerClientCommands(RegisterClientCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
 
@@ -74,6 +78,16 @@ public class ClientCommands {
 
                     return Command.SINGLE_SUCCESS;
                 })
+                .then(Commands.literal("Play")
+                        .then(Commands.argument("slot", IntegerArgumentType.integer())
+                                .executes((ctx) -> {
+                                    ///CustomAnimationManagerServerProxy.playByCommand(ctx);
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+
+                )
+                // config
                 .then(Commands.literal("Reload")
                         .executes(context -> {
                             ClientConfig.Load(true);

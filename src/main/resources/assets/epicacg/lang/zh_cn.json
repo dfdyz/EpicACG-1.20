@@ -11,6 +11,7 @@
   "item.epicacg.training_bow": "训练弓",
   "item.epicacg.firefly_sword": "格拉默制式近战武器 - 火萤IV型",
   "item.epicacg.custom_skillbook": "技能书",
+  "item.epicacg.slime_spear": "生命枪（未完成）",
 
   "skill.epicacg.sao_dual_sword_skill.tooltip": "二刀流:\nExtra技能,使用后可以解锁同时使用两把单手剑的能力\n二刀流比其他任何技能都要强大得多，它需要使用者拥有超凡的反应速度\n\n特殊效果:\n双持期间\n当耐力大于80%时,格挡全部攻击\n当耐力大于30%,韧性大幅提升",
   "skill.epicacg.sao_dual_sword_skill": "二刀流",
@@ -39,6 +40,9 @@
 
   "skill.epicacg.battle_scythe_sa": "归刃",
   "skill.epicacg.battle_scythe_sa.tooltip": "向前突进，多次闪现，快速斩击\n",
+
+  "skill.epicacg.sao_dual_sword_sa": "日蚀",
+  "skill.epicacg.sao_dual_sword_sa.tooltip": "腾空跃起，向下斩击\n",
 
   "skill.epicacg.gs_yoimiya_sa": "弓弦之舞",
   "skill.epicacg.gs_yoimiya_sa.tooltip": "腾空并向下释放烟花，造成大量伤害",

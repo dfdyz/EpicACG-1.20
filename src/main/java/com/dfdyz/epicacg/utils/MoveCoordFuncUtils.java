@@ -14,7 +14,7 @@ public class MoveCoordFuncUtils {
     public static MoveCoordFunctions.MoveCoordSetter TraceLockedTargetEx(float totalDistance){
         return (self, entitypatch, transformSheet) -> {
             LivingEntity attackTarget = entitypatch.getTarget();
-            if (attackTarget != null && !(Boolean)self.getRealAnimation().getProperty(AnimationProperty.AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false)) {
+            if (attackTarget != null && !(Boolean)self.getRealAnimation().get().getProperty(AnimationProperty.AttackAnimationProperty.FIXED_MOVE_DISTANCE).orElse(false)) {
                 TransformSheet transform = self.getCoord().copyAll();
                 Keyframe[] keyframes = transform.getKeyframes();
                 int startFrame = 0;

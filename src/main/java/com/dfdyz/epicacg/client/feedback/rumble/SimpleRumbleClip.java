@@ -18,13 +18,13 @@ public class SimpleRumbleClip implements IRumbleClip {
         top_time = Math.max(Math.max(1, wait_time / 2), Mth.ceil(timeInMs * 0.15));
         close_time = timeInMs - top_time;
 
-        System.out.println("Top "+ top_time);
-        System.out.println("Close " + close_time);
+        //System.out.println("Top "+ top_time);
+        //System.out.println("Close " + close_time);
     }
 
     //int age = 0;
     void handler(){
-        System.out.println("Play Rumble");
+        //System.out.println("Play Rumble");
         try {
             int age = 0;
             float scale;

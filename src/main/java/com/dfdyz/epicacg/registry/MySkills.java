@@ -10,14 +10,17 @@ import com.dfdyz.epicacg.efmextra.skills.MultiSpecialSkill;
 import com.dfdyz.epicacg.efmextra.skills.SAO.*;
 import com.dfdyz.epicacg.efmextra.skills.SimpleWeaponSASkill;
 import com.dfdyz.epicacg.efmextra.skills.TagSkill;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
 import yesman.epicfight.gameasset.Animations;
+import yesman.epicfight.skill.BasicAttack;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillCategories;
+import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.skill.weaponinnate.SimpleWeaponInnateSkill;
 
 import static yesman.epicfight.skill.Skill.Resource.WEAPON_CHARGE;
@@ -52,25 +55,26 @@ public class MySkills {
         SkillBuildEvent.ModRegistryWorker modRegistry = event.createRegistryWorker(EpicACG.MODID);
 
         MUTI_SPECIAL_ATTACK = modRegistry.build("muti_sa", MultiSpecialSkill::new,
-                Skill.createBuilder().setRegistryName(new ResourceLocation(EpicACG.MODID,"muti_sa"))
-                        .setCategory(EpicACGSkillCategories.MutiSpecialAttack));
+                PassiveSkill.createPassiveBuilder().setRegistryName(OjangUtils.newRL(EpicACG.MODID,"muti_sa"))
+                        .setCategory(EpicACGSkillCategories.MutiSpecialAttack)
+        );
 
         GS_YOIMIYA_SPECIALATK = modRegistry.build("gs_yoimiya_sa",GSSpecialAttack::new,
-                (SimpleWeaponInnateSkill.Builder) SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
-                        .setAnimations(() -> (AttackAnimation) MyAnimations.GS_Yoimiya_SA)
+                SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
+                        .setAnimations(MyAnimations.GS_Yoimiya_SA)
                         .setResource(WEAPON_CHARGE)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID, "gs_yoimiya_sa"))).newProperty();
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID, "gs_yoimiya_sa"))).newProperty();
         GS_Bow_FallAttackPatch = modRegistry.build("gs_air_attack_patch", GSFallAttack::new,
                 GSFallAttack.createBuilder()
                         .setCategory(SkillCategories.AIR_ATTACK)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID,"gs_air_attack_patch"))
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID,"gs_air_attack_patch"))
                         .setActivateType(Skill.ActivateType.ONE_SHOT)
                         .setResource(Skill.Resource.STAMINA));
 
         GS_Bow_BasicAttackPatch = modRegistry.build("gs_basic_attack_patch", GSBasicAtkPatch::new,
                 GSBasicAtkPatch.createBuilder()
                         .setCategory(SkillCategories.BASIC_ATTACK)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID,"gs_basic_attack_patch"))
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID,"gs_basic_attack_patch"))
                         .setActivateType(Skill.ActivateType.ONE_SHOT)
                         .setResource(Skill.Resource.NONE));
 
@@ -82,51 +86,50 @@ public class MySkills {
                         .setResource(Skill.Resource.NONE));
 
         SAO_BASICATK_PATCH = modRegistry.build("sao_basic_attack_patch", SAOBasicAtkPatch::new,
-                SAOBasicAtkPatch.createBuilder().setCategory(SkillCategories.BASIC_ATTACK)
-                        .setActivateType(Skill.ActivateType.ONE_SHOT)
-                        .setResource(Skill.Resource.NONE)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID,"sao_basic_attack_patch")));
+                BasicAttack.createBasicAttackBuilder()
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID,"sao_basic_attack_patch")));
+
         SAO_SINGLESWORD_INTERNAL = modRegistry.build( "sao_single_sword_internal", SAOSingleSwordInternal::new,
                 SAOSingleSwordInternal.createBuilder()
                         .setCategory(SkillCategories.WEAPON_PASSIVE)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID, "sao_single_sword_internal"))
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID, "sao_single_sword_internal"))
                         //.setActivateType(Skill.ActivateType.PASSIVE)
                         .setResource(Skill.Resource.NONE));
         SAO_SINGLESWORD_SA = modRegistry.build( "single_sword_sa", SingleSwordSASkills::new,
-                SingleSwordSASkills.createBuilder(new ResourceLocation(EpicACG.MODID, "single_sword_sa"))
+                SingleSwordSASkills.createBuilder(OjangUtils.newRL(EpicACG.MODID, "single_sword_sa"))
+                        .setAnimations(Animations.SWORD_AUTO1)
                         .setCategory(SkillCategories.WEAPON_INNATE)
-                        .setAnimations(() -> (AttackAnimation) Animations.SWORD_AUTO1)
         ).newProperty();
 
         BATTLE_SCYTHE_SA = modRegistry.build( "battle_scythe_sa", SimpleWeaponSASkill::new,
                 (SimpleWeaponInnateSkill.Builder) SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
-                        .setAnimations(() -> (AttackAnimation) MyAnimations.BATTLE_SCYTHE_SA1)
+                        .setAnimations(MyAnimations.BATTLE_SCYTHE_SA1)
                         .setResource(WEAPON_CHARGE)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID, "battle_scythe_sa"))
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID, "battle_scythe_sa"))
         ).newProperty();
 
         SAO_SINGLESWORD = modRegistry.build( "sao_single_sword", TagSkill::new,
                 TagSkill.createBuilder(
-                        new ResourceLocation(EpicACG.MODID,"sao_single_sword"),
+                        OjangUtils.newRL(EpicACG.MODID,"sao_single_sword"),
                         EpicACGSkillCategories.SAO_SINGLE_SWORD
-                ).setCreativeTab(Tab.TAB_ITEMS.get()));
+                ));
         SAO_DUALSWORD = modRegistry.build( "sao_dual_sword_skill", DualBladeSkill::new,
-                DualBladeSkill.createBuilder(new ResourceLocation(EpicACG.MODID,"sao_dual_sword_skill"))
+                DualBladeSkill.createBuilder(OjangUtils.newRL(EpicACG.MODID,"sao_dual_sword_skill"))
                         .setCreativeTab(Tab.TAB_ITEMS.get()));
         SAO_RAPIER_A = modRegistry.build("sao_rapier_skill", RapierSkill::new,
-                RapierSkill.createBuilder(new ResourceLocation(EpicACG.MODID,"sao_rapier_skill"))
+                RapierSkill.createBuilder(OjangUtils.newRL(EpicACG.MODID,"sao_rapier_skill"))
                         .setCreativeTab(Tab.TAB_ITEMS.get()));
         WEAPON_SKILL_RAPIER = modRegistry.build( "weapon_skill_rapier", RapierSpicialAttackSkill::new,
-                RapierSpicialAttackSkill.createBuilder(
-                                new ResourceLocation(EpicACG.MODID, "weapon_skill_rapier"))
+                RapierSpicialAttackSkill.create_Builder(OjangUtils.newRL(EpicACG.MODID, "weapon_skill_rapier"))
+                        .setAnimations(MyAnimations.SAO_RAPIER_SPECIAL_DASH)
                         .setResource(WEAPON_CHARGE)
                         .setCategory(SkillCategories.WEAPON_INNATE)
-                        .setAnimation(() -> (AttackAnimation) MyAnimations.SAO_RAPIER_SPECIAL_DASH)).newProperty();
+        );
         SAO_DUAL_SWORD_SA = modRegistry.build( "sao_dual_sword_sa", SimpleWeaponSASkill::new,
-                (SimpleWeaponInnateSkill.Builder) SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
-                        .setAnimations(() -> (AttackAnimation) MyAnimations.SAO_DUAL_SWORD_SA1)
+                SimpleWeaponInnateSkill.createSimpleWeaponInnateBuilder()
+                        .setAnimations(MyAnimations.SAO_DUAL_SWORD_SA1)
                         .setResource(WEAPON_CHARGE)
-                        .setRegistryName(new ResourceLocation(EpicACG.MODID, "sao_dual_sword_sa"))).newProperty();
+                        .setRegistryName(OjangUtils.newRL(EpicACG.MODID, "sao_dual_sword_sa"))).newProperty();
     }
 
 }

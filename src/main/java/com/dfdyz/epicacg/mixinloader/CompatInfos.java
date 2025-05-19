@@ -24,8 +24,8 @@ public class CompatInfos {
     }
 
     static void register(){
-        COMPAT_YAMATO = new CompatMod("yamatomoveset",
-                "MixinYamatoTest"
+        COMPAT_YAMATO = new CompatMod("cdmoveset",
+                "MixinYamatoSA"
         );
         IRIS_SHADER = new CompatMod("oculus",
                 (m) -> new CompatMixinInfo(m, "MixinParticleEngineB") ,

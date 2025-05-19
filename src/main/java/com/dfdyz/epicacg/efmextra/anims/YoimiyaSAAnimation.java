@@ -4,15 +4,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
-import yesman.epicfight.api.animation.AnimationPlayer;
-import yesman.epicfight.api.animation.Joint;
-import yesman.epicfight.api.animation.JointTransform;
-import yesman.epicfight.api.animation.Pose;
+import yesman.epicfight.api.animation.*;
+import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.LinkAnimation;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
@@ -22,14 +21,15 @@ import yesman.epicfight.world.capabilities.entitypatch.MobPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Locale;
 
 public class YoimiyaSAAnimation extends AttackAnimation {
     //private final int Aid;
     //public final String Hjoint;
 
-    public YoimiyaSAAnimation(float convertTime, float antic, float recovery, InteractionHand hand, @Nullable Collider collider, Joint scanner, String path, Armature model) {
-        super(convertTime, path, model,
+    public YoimiyaSAAnimation(float convertTime, float antic, float recovery, InteractionHand hand, @Nullable Collider collider, Joint scanner, AnimationManager.AnimationAccessor<? extends YoimiyaSAAnimation> accessor, AssetAccessor<? extends Armature> armature) {
+        super(convertTime, accessor, armature,
                 new Phase(0.0F, 0f, antic, recovery, Float.MAX_VALUE, hand, scanner, collider));
 
         //Hjoint = shoot;
@@ -53,9 +53,9 @@ public class YoimiyaSAAnimation extends AttackAnimation {
 
     @Override
     public void modifyPose(DynamicAnimation animation, Pose pose, LivingEntityPatch<?> entitypatch, float time, float partialTicks) {
-        JointTransform jt = pose.getOrDefaultTransform("Root");
+        JointTransform jt = pose.orElseEmpty("Root");
         Vec3f jointPosition = jt.translation();
-        OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTrasnform().removeTranslation();
+        OpenMatrix4f toRootTransformApplied = entitypatch.getArmature().searchJointByName("Root").getLocalTransform().removeTranslation();
         OpenMatrix4f toOrigin = OpenMatrix4f.invert(toRootTransformApplied, (OpenMatrix4f)null);
         Vec3f worldPosition = OpenMatrix4f.transform3v(toRootTransformApplied, jointPosition, (Vec3f)null);
         worldPosition.x = 0.0F;
@@ -68,16 +68,16 @@ public class YoimiyaSAAnimation extends AttackAnimation {
     }
 
     @Override
-    protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, DynamicAnimation dynamicAnimation) {
+    protected Vec3 getCoordVector(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> animation) {
         entitypatch.getOriginal().setDeltaMovement(0,0,0);
         entitypatch.getOriginal().setNoGravity(true);
-        Vec3 vec3 = super.getCoordVector(entitypatch, dynamicAnimation);
+        Vec3 vec3 = super.getCoordVector(entitypatch, animation);
         entitypatch.getOriginal().setNoGravity(false);
         return vec3.multiply(1,2,1);
     }
 
     @Override
-    protected void attackTick(LivingEntityPatch<?> entitypatch, DynamicAnimation animation) {
+    protected void attackTick(LivingEntityPatch<?> entitypatch, AssetAccessor<? extends DynamicAnimation> animation) {
         /*
         if (!entitypatch.isLogicalClient()) {
             AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this);
@@ -109,7 +109,7 @@ public class YoimiyaSAAnimation extends AttackAnimation {
         }
 
          */
-        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this);
+        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(getAccessor());
         float elapsedTime = player.getElapsedTime();
         float prevElapsedTime = player.getPrevElapsedTime();
         EntityState state = this.getState(entitypatch, elapsedTime);
@@ -141,4 +141,5 @@ public class YoimiyaSAAnimation extends AttackAnimation {
     public boolean isBasicAttackAnimation() {
         return true;
     }
+
 }

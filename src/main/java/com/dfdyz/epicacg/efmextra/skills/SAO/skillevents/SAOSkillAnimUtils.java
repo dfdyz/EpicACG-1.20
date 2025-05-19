@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult;
@@ -126,7 +127,7 @@ public class SAOSkillAnimUtils {
 
     }
 
-    public static void HurtEntity(LivingEntityPatch<?> attacker, Entity target, StaticAnimation animation, float damageRate, float cutRate){
+    public static void HurtEntity(LivingEntityPatch<?> attacker, Entity target, AnimationManager.AnimationAccessor<? extends AttackAnimation> animation, float damageRate, float cutRate){
         EpicFightDamageSource source = attacker.getDamageSource(animation, InteractionHand.MAIN_HAND);
         LivingEntity rootEntity = getTrueEntity(target);
 

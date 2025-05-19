@@ -22,8 +22,8 @@ import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.client.animation.property.ClientAnimationProperties;
 import yesman.epicfight.api.client.animation.property.TrailInfo;
-import yesman.epicfight.api.client.model.ItemSkin;
-import yesman.epicfight.api.client.model.ItemSkins;
+import yesman.epicfight.client.ClientEngine;
+import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -34,11 +34,11 @@ import java.util.Optional;
 public class PhotonTrailingParticle extends NoRenderParticle {
     private final Joint joint;
     private final TrailInfo trailInfo;
-    private final StaticAnimation animation;
+    private final AnimationManager.AnimationAccessor<? extends StaticAnimation> animation;
     private final LivingEntityPatch<?> entitypatch;
     private boolean animationEnd = false;
 
-    public PhotonTrailingParticle(ClientLevel level, LivingEntityPatch<?> entitypatch, Joint joint, StaticAnimation animation, TrailInfo trailInfo) {
+    public PhotonTrailingParticle(ClientLevel level, LivingEntityPatch<?> entitypatch, Joint joint, AnimationManager.AnimationAccessor<? extends StaticAnimation> animation, TrailInfo trailInfo) {
         super(level, 0,0,0);
 
         this.joint = joint;
@@ -47,7 +47,7 @@ public class PhotonTrailingParticle extends NoRenderParticle {
         this.hasPhysics = false;
         this.trailInfo = trailInfo;
 
-        this.lifetime = trailInfo.trailLifetime;
+        this.lifetime = trailInfo.trailLifetime();
 
         if(this.entitypatch.getOriginal().isAlive()){
             Vec3 pos = entitypatch.getOriginal().position();
@@ -66,15 +66,15 @@ public class PhotonTrailingParticle extends NoRenderParticle {
                 this.remove();
             }
         } else {
-            if (!this.entitypatch.getOriginal().isAlive()
-                    || this.animation != animPlayer.getAnimation().getRealAnimation()
-                    || animPlayer.getElapsedTime() > this.trailInfo.endTime) {
+            if (animPlayer != null && (!this.entitypatch.getOriginal().isAlive()
+                    || this.animation != animPlayer.getAnimation().get().getRealAnimation()
+                    || animPlayer.getElapsedTime() > this.trailInfo.endTime())) {
                 this.animationEnd = true;
-                this.lifetime = this.trailInfo.trailLifetime;
+                this.lifetime = this.trailInfo.trailLifetime();
             }
         }
 
-        if(this.entitypatch.getOriginal().isAlive() && lifetime > 0 && animPlayer.getElapsedTime() > trailInfo.startTime){
+        if(this.entitypatch.getOriginal().isAlive() && lifetime > 0 && animPlayer.getElapsedTime() > trailInfo.startTime()){
             Vec3 old = entitypatch.getOriginal().getPosition(0);
             Vec3 curr = entitypatch.getOriginal().getPosition(1);
 
@@ -86,7 +86,7 @@ public class PhotonTrailingParticle extends NoRenderParticle {
             for (int i = 0; i < count; i++) {
                 pos = curr.lerp(old, per * i);
                 photon = new Photon(level, pos.x, pos.y, pos.z,
-                        trailInfo.trailLifetime, trailInfo.rCol, trailInfo.gCol, trailInfo.bCol);
+                        trailInfo.trailLifetime(), trailInfo.rCol(), trailInfo.gCol(), trailInfo.bCol());
 
                 photon.scale(25f);
                 RenderUtils.AddParticle(level, photon);
@@ -107,7 +107,6 @@ public class PhotonTrailingParticle extends NoRenderParticle {
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             int eid = (int)Double.doubleToRawLongBits(x);
-            //int modid = (int)Double.doubleToRawLongBits(y);
             int animid = (int)Double.doubleToRawLongBits(z);
             int jointId = (int)Double.doubleToRawLongBits(xSpeed);
             int idx = (int)Double.doubleToRawLongBits(ySpeed);
@@ -115,20 +114,20 @@ public class PhotonTrailingParticle extends NoRenderParticle {
 
             if (entity != null) {
                 LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(entity, LivingEntityPatch.class);
-                StaticAnimation animation = AnimationManager.getInstance().byId( animid);
-                Optional<List<TrailInfo>> trailInfo = animation.getProperty(ClientAnimationProperties.TRAIL_EFFECT);
+                var animation = AnimationManager.byId( animid);
+                Optional<List<TrailInfo>> trailInfo = animation.get().getProperty(ClientAnimationProperties.TRAIL_EFFECT);
                 TrailInfo result = trailInfo.get().get(idx);
 
-                if (result.hand != null) {
-                    ItemStack stack = entitypatch.getOriginal().getItemInHand(result.hand);
-                    ItemSkin itemSkin = ItemSkins.getItemSkin(stack.getItem());
+                if (result.hand() != null) {
+                    ItemStack stack = entitypatch.getOriginal().getItemInHand(result.hand());
+                    RenderItemBase renderItemBase = ClientEngine.getInstance().renderEngine.getItemRenderer(stack);
 
-                    if (itemSkin != null) {
-                        result = itemSkin.trailInfo().overwrite(result);
+                    if (renderItemBase != null && renderItemBase.trailInfo() != null) {
+                        result = renderItemBase.trailInfo().overwrite(result);
                     }
                 }
 
-                if (entitypatch != null && animation != null && trailInfo.isPresent()) {
+                if (entitypatch != null && result.playable()) {
                     return new PhotonTrailingParticle(level, entitypatch, entitypatch.getArmature().searchJointById(jointId), animation, result);
                 }
             }

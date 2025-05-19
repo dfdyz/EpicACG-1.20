@@ -3,6 +3,7 @@ package com.dfdyz.epicacg.event;
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.client.model.item.BakedModelWithISTER;
 import com.dfdyz.epicacg.client.render.item.FireFlySwordRenderer;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +19,7 @@ public class LoadingEvents {
 
     public static void onModelBaked(ModelEvent.ModifyBakingResult event) {
         EpicACG.LOGGER.info("Reg Item Renderer");
-        ModelResourceLocation location = new ModelResourceLocation(new ResourceLocation(EpicACG.MODID, "firefly_sword"), "inventory");
+        ModelResourceLocation location = new ModelResourceLocation(OjangUtils.newRL(EpicACG.MODID, "firefly_sword"), "inventory");
 
         BakedModel existingModel = event.getModels().get(location);
         if (existingModel != null && !(existingModel instanceof BakedModelWithISTER)) {
@@ -42,8 +43,8 @@ public class LoadingEvents {
         EpicACG.LOGGER.info("OK.");
     }
 
-    public static final ResourceLocation MODEL_FIREFLY_SWORD_1 = new ResourceLocation(EpicACG.MODID,"item/firefly_sword_emissive");
-    public static final ResourceLocation MODEL_FIREFLY_SWORD_0 = new ResourceLocation(EpicACG.MODID,"item/firefly_sword_unlit");
+    public static final ResourceLocation MODEL_FIREFLY_SWORD_1 = OjangUtils.newRL(EpicACG.MODID,"item/firefly_sword_emissive");
+    public static final ResourceLocation MODEL_FIREFLY_SWORD_0 = OjangUtils.newRL(EpicACG.MODID,"item/firefly_sword_unlit");
 
     public static void onModelRegister(ModelEvent.RegisterAdditional event){
         event.register(MODEL_FIREFLY_SWORD_0);
@@ -55,7 +56,7 @@ public class LoadingEvents {
 
             EpicACG.LOGGER.info("Reg Item Model Override");
             /*
-            ItemProperties.register(Items.FireFlySword.get(), new ResourceLocation(EpicACG.MODID, "part"),
+            ItemProperties.register(Items.FireFlySword.get(), OjangUtils.newRL(EpicACG.MODID, "part"),
                     (itemStack, clientWorld, livingEntity, i) ->
                     {
                         CompoundTag tags = itemStack.getOrCreateTag();

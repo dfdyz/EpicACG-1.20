@@ -1,6 +1,7 @@
 package com.dfdyz.epicacg.client.render.pipeline;
 
 import com.dfdyz.epicacg.client.render.targets.TargetManager;
+import com.dfdyz.epicacg.utils.OjangUtils;
 import com.google.common.collect.Queues;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -19,7 +20,7 @@ public class PostEffectPipelines {
     public static final Queue<Pipeline> PostEffectQueue = Queues.newConcurrentLinkedQueue();
     public static final PriorityQueue<Pipeline> PostEffectQueueInternal = Queues.newPriorityQueue();
 
-    static ResourceLocation depth_target = new ResourceLocation("epicacg:depth_target");
+    static ResourceLocation depth_target = OjangUtils.newRL("epicacg:depth_target");
     public static RenderTarget depth;
 
     public static void RenderPost(){
