@@ -16,8 +16,14 @@ import net.minecraftforge.fml.common.Mod;
 public class KeyMappings {
 
     public static final KeyMapping SwitchSkill = new KeyMapping("key." + EpicACG.MODID + ".switch_skill", InputConstants.KEY_B, "key." + EpicACG.MODID + ".gui");
+    public static final KeyMapping RightSkill = new KeyMapping("key." + EpicACG.MODID + ".right_skill", InputConstants.UNKNOWN.getValue(), "key." + EpicACG.MODID + ".gui");
+    public static final KeyMapping LeftSkill = new KeyMapping("key." + EpicACG.MODID + ".left_skill", InputConstants.UNKNOWN.getValue(), "key." + EpicACG.MODID + ".gui");
+
+
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(SwitchSkill);
+        event.register(RightSkill);
+        event.register(LeftSkill);
     }
 }

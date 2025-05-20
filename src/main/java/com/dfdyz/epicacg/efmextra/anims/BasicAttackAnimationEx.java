@@ -1,5 +1,6 @@
 package com.dfdyz.epicacg.efmextra.anims;
 
+import com.dfdyz.epicacg.client.feedback.utils.RumbleUtils;
 import com.dfdyz.epicacg.efmextra.anims.property.MyProperties;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -88,6 +89,8 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
         if (!list.isEmpty()) {
             HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AnimationProperty.AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
             int maxStrikes = this.getMaxStrikes(entitypatch, phase);
+
+            RumbleUtils.PlayForHit();
 
             while (entitypatch.getCurrenltyHurtEntities().size() < maxStrikes && hitEntities.next()) {
                 Entity hitten = hitEntities.getEntity();

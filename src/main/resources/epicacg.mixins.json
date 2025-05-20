@@ -11,7 +11,8 @@
     "MixinParticleEngine",
     "compat.oculus.MixinParticleEngineA",
     "compat.oculus.MixinParticleEngineB",
-    "feature.feedback.MixinLevelUtils"
+    "feature.feedback.MixinLevelUtils",
+    "feature.feedback.MixinBasicAttackAnimation"
   ],
   "mixins": [
     "MixinMob",

@@ -48,5 +48,7 @@
   "skill.epicacg.gs_yoimiya_sa.tooltip": "腾空并向下释放烟花，造成大量伤害",
 
   "key.epicacg.gui": "史诗战斗ACG附属包",
-  "key.epicacg.switch_skill": "技能选择(按住并滚动滚轮)"
+  "key.epicacg.switch_skill": "技能选择(按住并滚动滚轮)",
+  "key.epicacg.right_skill": "下一个技能",
+  "key.epicacg.left_skill": "上一个技能"
 }

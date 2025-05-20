@@ -51,8 +51,8 @@
   "skill.epicacg.gs_yoimiya_sa.tooltip": "Firework !",
 
 
-
-
   "key.epicacg.gui": "EFM ACG AddonPack",
-  "key.epicacg.switch_skill": "SkillSwitching(Hold and Rolling the mid button)"
+  "key.epicacg.switch_skill": "SkillSwitching(Hold and Rolling the mid button)",
+  "key.epicacg.right_skill": "next skill",
+  "key.epicacg.left_skill": "back skill"
 }
