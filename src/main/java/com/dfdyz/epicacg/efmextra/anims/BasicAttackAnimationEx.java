@@ -2,6 +2,8 @@ package com.dfdyz.epicacg.efmextra.anims;
 
 import com.dfdyz.epicacg.client.feedback.utils.RumbleUtils;
 import com.dfdyz.epicacg.efmextra.anims.property.MyProperties;
+import com.dfdyz.epicacg.network.Netmgr;
+import com.dfdyz.epicacg.network.Server.S_HitRumble;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +25,7 @@ import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 
 import java.util.List;
@@ -90,7 +93,9 @@ public class BasicAttackAnimationEx extends BasicAttackAnimation {
             HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AnimationProperty.AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
             int maxStrikes = this.getMaxStrikes(entitypatch, phase);
 
-            RumbleUtils.PlayForHit();
+            if(entitypatch instanceof ServerPlayerPatch spp){
+                Netmgr.sendToPlayer(new S_HitRumble(), spp.getOriginal());
+            }
 
             while (entitypatch.getCurrenltyHurtEntities().size() < maxStrikes && hitEntities.next()) {
                 Entity hitten = hitEntities.getEntity();

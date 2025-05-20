@@ -2,9 +2,12 @@ package com.dfdyz.epicacg.network;
 
 import com.dfdyz.epicacg.EpicACG;
 import com.dfdyz.epicacg.network.Client.C_RollSkillSelect;
+import com.dfdyz.epicacg.network.Server.S_HitRumble;
 import com.dfdyz.epicacg.utils.OjangUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import static com.dfdyz.epicacg.EpicACG.VERSION;
@@ -17,9 +20,9 @@ public class Netmgr {
         CHANNEL.sendToServer(message);
     }
 
-    /*
+
     public static <MSG> void sendToClient(MSG message, PacketDistributor.PacketTarget packetTarget) {
-        INSTANCE.send(packetTarget, message);
+        CHANNEL.send(packetTarget, message);
     }
 
     public static <MSG> void sendToAll(MSG message) {
@@ -37,10 +40,11 @@ public class Netmgr {
     public static <MSG> void sendToAllPlayerTrackingThisEntityWithSelf(MSG message, ServerPlayer entity) {
         sendToPlayer(message, entity);
         sendToClient(message, PacketDistributor.TRACKING_ENTITY.with(() -> entity));
-    }*/
+    }
     public static void register() {
         int id = 0;
         CHANNEL.registerMessage(id++, C_RollSkillSelect.class, C_RollSkillSelect::toBytes, C_RollSkillSelect::fromBytes, C_RollSkillSelect::handle);
+        CHANNEL.registerMessage(id++, S_HitRumble.class, (a, b)->{}, S_HitRumble::new, S_HitRumble::handle);
     }
 
 }

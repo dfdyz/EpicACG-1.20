@@ -3,6 +3,7 @@ package com.dfdyz.epicacg.client.feedback.utils;
 import com.dfdyz.epicacg.client.feedback.FeedBackManager;
 import com.dfdyz.epicacg.client.feedback.channel.HitRumbleChannel;
 import com.dfdyz.epicacg.client.feedback.channel.ShockRumbleChannel;
+import com.mrcrayfish.framework.network.Network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -40,6 +41,4 @@ public class RumbleUtils {
                 new HitRumbleChannel(4)
         );
     }
-
-
 }

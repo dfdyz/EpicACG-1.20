@@ -11,12 +11,13 @@
     "MixinParticleEngine",
     "compat.oculus.MixinParticleEngineA",
     "compat.oculus.MixinParticleEngineB",
-    "feature.feedback.MixinLevelUtils",
-    "feature.feedback.MixinBasicAttackAnimation"
+    "feature.feedback.MixinLevelUtils"
   ],
   "mixins": [
     "MixinMob",
-    "MixinSkillDataManager"
+    "MixinSkillDataManager",
+    "feature.feedback.MixinBasicAttackAnimation"
+
   ],
   "injectors": {
     "defaultRequire": 1
